@@ -2,79 +2,100 @@ package jaseto;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
+import java.util.function.Consumer;
 
 import org.xml.sax.Attributes;
 
 import it.unimi.dsi.fastutil.Stack;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import jaseto.Jaseto.E;
 import toools.reflect.Clazz;
 
 class ArrayDriver extends Driver
 {
+
 	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
+	public void forEachChildOf(Object array, Consumer c)
 	{
-		attr.put("class", o.getClass().getComponentType().getName() + "[]");
-		attr.put("length", "" + Array.getLength(o));
+		int len = Array.getLength(array);
+
+		for (int i = 0; i < len; ++i)
+		{
+			Object e = Array.get(array, i);
+			c.accept(e);
+		}
 	}
 
 	@Override
-	public void printChildren(Object array, PrintWriter w, Registry registry)
+	public String toString(Object array)
 	{
 		Class componentType = array.getClass().getComponentType();
-		Driver containedTypeDriver = Jaseto.getDriver(componentType);
+		Driver driver = Jaseto.getDriver(componentType);
+
+		if ( ! (driver instanceof StringableDriver))
+			return null;
+
+		StringableDriver sd = (StringableDriver) driver;
 		int len = Array.getLength(array);
+		String s = "";
 
-		if (containedTypeDriver instanceof StringableDriver)
+		for (int i = 0; i < len; ++i)
 		{
-			StringableDriver sdriver = ((StringableDriver) containedTypeDriver);
-			String value = "";
+			if (i > 0)
+				s += ", ";
 
-			for (int i = 0; i < len; ++i)
-			{
-				Object e = Array.get(array, i);
+			Object child = Array.get(array, i);
 
-				if (e == null || e.getClass() != componentType)
-					throw new IllegalStateException("not possible: " + e);
+			if (child == null)
+				return null;
 
-				value += sdriver.toString(e);
-				
-				if (i < len - 1)
-				{
-					value += ", ";
-				}
-			}
+			if (child.getClass() != componentType
+					&& Clazz.class_primitives.get(child.getClass()) != componentType)
+				return null;
 
-			w.print(" value='" + value + "'");
+			String cs = sd.toString(child);
+
+			if (cs.contains(","))
+				return null;
+
+			s += cs;
+		}
+
+		return s;
+	}
+
+	@Override
+	public Object instantiate(String classname, String value, Stack<E> stack)
+	{
+		Class componentType = Clazz
+				.findClass(classname.substring(0, classname.length() - 2));
+
+		if (value == null)
+		{
+			int length = Integer.valueOf(attributes.getValue("length"));
+			return Array.newInstance(componentType, length);
 		}
 		else
 		{
-			for (int i = 0; i < len; ++i)
+			StringableDriver d = (StringableDriver) Jaseto.getDriver(componentType);
+			String[] ss = value.split(",");
+			Object array = Array.newInstance(componentType, ss.length);
+
+			for (int i = 0; i < ss.length; ++i)
 			{
-				Object e = Array.get(array, i);
-				Jaseto.print(e, w, registry, new AttributeMap());
+				Object child = d.toObject(ss[i]);
+				Array.set(array, i, child);
 			}
+
+			return array;
 		}
-
 	}
-
-	@Override
-	public Object instantiate(String qName, Attributes attributes, Stack<E> stack)
-	{
-		String classname = attributes.getValue("class");
-		Class componentType = Clazz
-				.findClass(classname.substring(0, classname.length() - 2));
-		int length = Integer.valueOf(attributes.getValue("length"));
-		return Array.newInstance(componentType, length);
-	}
-
 
 	@Override
 	public void attachChild(Object parent, E child, Stack<E> stack, int childIndex)
 	{
 		Array.set(parent, childIndex, child.object);
 	}
+	
+	 
 
 }

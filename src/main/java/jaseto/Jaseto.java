@@ -8,16 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import it.unimi.dsi.fastutil.Stack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import jaseto.Parser.H;
 import toools.reflect.Clazz;
 
 public class Jaseto
@@ -69,39 +65,47 @@ public class Jaseto
 		if (o == null)
 			return new nullDriver();
 
-		for (ClassDriver c : classDrivers.values())
+		return getDriver(o.getClass());
+	}
+
+	static Driver getDriver(Class c)
+	{
+		if (c.isPrimitive())
+			return classDrivers.get(c);
+
+		Class primitiveEquivalent = Clazz.class_primitives.get(c);
+
+		if (primitiveEquivalent != null)
+			return classDrivers.get(primitiveEquivalent);
+
+		// some specific driver ?
+		for (ClassDriver cd : classDrivers.values())
 		{
-			if (c.support(o.getClass()))
+			if (cd.support(c))
 			{
-				return c;
+				return cd;
 			}
 		}
 
-		if (o.getClass().isArray())
+		if (c.isArray())
 		{
 			return arrayDriver;
 		}
 		else
 		{
+			// no specific driver. Introspect then.
 			return introspectingDriver;
 		}
 	}
 
-	static Driver getDriverFor(String qName, Attributes attr)
+	static Driver getDriverFor(String classname)
 	{
-		if (qName.equals("null"))
+		if (classname.equals("null"))
 		{
 			return new nullDriver();
 		}
 		else
 		{
-			String classname = attr.getValue("class");
-
-			if (classname == null)
-			{
-				classname = qName;
-			}
-
 			Class c = Clazz.findClass(classname);
 
 			if (c == null)
@@ -128,36 +132,7 @@ public class Jaseto
 
 	public static void print(Object o, PrintWriter os)
 	{
-		print(o, os, new Registry(), new AttributeMap());
-	}
-
-	public static void print(Object o, PrintWriter w, Registry registry,
-			AttributeMap attr)
-	{
-		if (registry == null)
-			registry = new Registry();
-
-		if (o != null && registry.contains(o))
-		{
-			w.print("<object id=\"");
-			w.print(registry.id(o));
-			w.print("\" ");
-			w.print(attr);
-			w.print(" />");
-		}
-		else
-		{
-			Driver d = getDriver(o);
-			d.printXMLElement(o, w, registry, attr);
-
-			if (attr.containsKey("id"))
-			{
-				registry.add(o);
-			}
-
-			d.printChildren(o, w, registry);
-			d.endMark(w);
-		}
+		getDriver(o).print(o, os, new Registry(), 0);
 	}
 
 	public static class E
@@ -165,56 +140,62 @@ public class Jaseto
 		Driver driver;
 		Object object;
 		String name;
-		Attributes attr;
+		String fieldName;
 		int nbChildren;
 	}
 
 	public static Object toObject(Reader os)
 			throws ParserConfigurationException, SAXException, IOException
 	{
-		SAXParserFactory spf = SAXParserFactory.newInstance();
-		SAXParser saxParser = spf.newSAXParser();
+		Parser saxParser = new Parser();
 
 		Stack<E> stack = new ObjectArrayList<>();
 		Registry registry = new Registry();
 		Object[] r = new Object[1];
 
-		saxParser.parse(new InputSource(os), new DefaultHandler()
+		saxParser.parse(os, new H()
 		{
 			@Override
-			public void startElement(String uri, String localName, String qName,
-					Attributes attributes) throws SAXException
+			public void start(String line)
 			{
 				E element = new E();
-				element.name = qName;
-				element.attr = attributes;
+				
 
-				if (qName.equals("object") && attributes.getValue("class") == null
-						&& attributes.getValue("id") != null)
+				// just the ID or null
+				if (a.length == 1)
 				{
-					int id = Integer.valueOf(attributes.getValue("id"));
-					element.object = registry.get(id);
+					if (a[0].equals("null"))
+					{
+						element.object = null;
+					}
+					else
+					{
+						int id = Integer.valueOf(a[0]);
+						element.object = registry.get(id);
+					}
 				}
 				else
 				{
-					element.driver = getDriverFor(qName, attributes);
-					element.object = element.driver.instantiate(qName, attributes, stack);
+					if (stack.isEmpty())
+					{
+						String classname = a[0];
+						int id = Integer.valueOf(a[1]);
+						element.driver = getDriverFor(classname);
+						element.object = element.driver.instantiate(classname, stack);
+						stack.push(element);
+					}
+					else
+					{
+						E parent = stack.top();
+						parent.driver.attachChild(parent.object, element, stack,
+								parent.nbChildren);
+						parent.nbChildren++;
+					}
 				}
-
-				if ( ! stack.isEmpty())
-				{
-					E parent = stack.top();
-					parent.driver.attachChild(parent.object, element, stack,
-							parent.nbChildren);
-					parent.nbChildren++;
-				}
-
-				stack.push(element);
 			}
 
 			@Override
-			public void endElement(String uri, String localName, String qName)
-					throws SAXException
+			public void end()
 			{
 				r[0] = stack.pop().object;
 			}

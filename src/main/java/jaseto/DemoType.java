@@ -1,4 +1,4 @@
-package jaseto.demo;
+package jaseto;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,6 +1,7 @@
 package jaseto;
 
 import java.io.PrintWriter;
+import java.util.function.Consumer;
 
 import org.xml.sax.Attributes;
 
@@ -16,7 +17,7 @@ public class SubstitutionObjectDriver extends ClassDriver
 	}
 
 	@Override
-	public void printChildren(Object o, PrintWriter w, Registry registry)
+	public void forEachChildOf(Object o, Consumer c)
 	{
 		SubstitutionObject so = ((SubstitutionObject) o);
 
@@ -25,7 +26,7 @@ public class SubstitutionObjectDriver extends ClassDriver
 			Object value = so.fields.get(o);
 			AttributeMap attr = new AttributeMap();
 			attr.put("field", field);
-			Jaseto.print(value, w, registry, attr);
+			c.accept(value);
 		}
 	}
 
@@ -37,14 +38,15 @@ public class SubstitutionObjectDriver extends ClassDriver
 	}
 
 	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
-	{
-	}
-
-	@Override
 	public Class getHandledType()
 	{
 		return SubstitutionObject.class;
+	}
+
+	@Override
+	public String toString(Object o)
+	{
+		return null;
 	}
 
 }

@@ -1,4 +1,4 @@
-package jaseto.demo;
+package jaseto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,8 +8,6 @@ import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
-
-import jaseto.Jaseto;
 
 public class Test
 {

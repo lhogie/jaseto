@@ -1,4 +1,4 @@
-package jaseto.demo;
+package jaseto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,8 +9,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import jaseto.Jaseto;
-import jaseto.SubstitutionObject;
 import toools.text.xml.XML;
 
 public class Deserialize
@@ -20,7 +18,6 @@ public class Deserialize
 		StringWriter sw = new StringWriter();
 		Jaseto.print(new DemoType(), new PrintWriter(sw));
 		String xml = sw.getBuffer().toString();
-//		xml = xml.replaceAll("o2s.test.DemoType", "NewType");
 		
 		System.out.println(XML.parseXML(xml, false));
 		Object o = Jaseto.toObject(new StringReader(xml));

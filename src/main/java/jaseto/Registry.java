@@ -23,7 +23,7 @@ public class Registry
 		return m.get(id);
 	}
 
-	Int2IntOpenHashMap translation = new Int2IntOpenHashMap();
+	private Int2IntOpenHashMap translation = new Int2IntOpenHashMap();
 
 	public int id(Object o)
 	{

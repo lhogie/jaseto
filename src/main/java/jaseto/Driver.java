@@ -1,49 +1,60 @@
 package jaseto;
 
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.function.Consumer;
 
-import org.xml.sax.Attributes;
-
-import it.unimi.dsi.fastutil.Stack;
-import jaseto.Jaseto.E;
+import jaseto.Parser_CLike.Attr;
 import toools.reflect.Clazz;
 
-public abstract class Driver
-{
-	public final void printXMLElement(Object o, PrintWriter w, Registry registry,
-			AttributeMap attr)
-	{
-		if (o != null)
-		{
-			attr.put("id", "" + registry.id(o));
-			attr.put("class", o.getClass().getName());
+public abstract class Driver {
+	public void print(Object object, PrintWriter w, Registry registry, int depth) {
+		for (int i = 0; i < depth; ++i) {
+			w.print('\t');
 		}
-		
-		adaptAttributes(attr, o);
-		w.print("<" + getElementName() + " " + attr + ">");
+
+		if (object != null && registry.contains(object)) {
+			w.print(registry.id(object));
+			w.print('\n');
+		}
+		else {
+			registry.add(object);
+			w.print(getTypeName(object));
+			w.print(' ');
+			w.print(registry.id(object));
+
+			String stringRepresentation = toString(object);
+
+			if (stringRepresentation != null) {
+				w.print(' ');
+				w.print('=');
+				w.print(' ');
+				w.print(stringRepresentation);
+				w.print('\n');
+			}
+			else {
+				w.print('\n');
+				forEachChildOf(object, c -> print(c, w, registry, depth + 1));
+			}
+		}
 	}
 
-	protected abstract void adaptAttributes(AttributeMap attr, Object o);
-
-	protected String getElementName()
-	{
-		return "object";
+	protected String getTypeName(Object o) {
+		return o.getClass().getName();
 	}
 
-	public abstract void printChildren(Object o, PrintWriter w, Registry registry);
+	protected void adapt(AttributeMap attributes) {
 
-	protected void endMark(PrintWriter w)
-	{
-		w.print("</" + getElementName() + ">");
 	}
 
-	public Object instantiate(String qName, Attributes attributes, Stack<E> stack)
-	{
-		String classname = attributes.getValue("class");
+	public abstract String toString(Object o);
+
+	public abstract void forEachChildOf(Object o, Consumer c);
+
+	public Object instantiate(String classname, List<Attr> attributes) {
 		Class clazz = Clazz.findClassOrFail(classname);
-		Object o = Clazz.makeInstanceOrFail(clazz);
-		return o;
+		return Clazz.makeInstanceOrFail(clazz);
 	}
 
-	public abstract void attachChild(Object parent, E child, Stack<E> stack, int childIndex);
+	public abstract void attachChild(Object parent, Object child, int childIndex);
 }

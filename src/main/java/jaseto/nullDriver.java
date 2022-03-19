@@ -1,6 +1,6 @@
 package jaseto;
 
-import java.io.PrintWriter;
+import java.util.function.Consumer;
 
 import org.xml.sax.Attributes;
 
@@ -10,17 +10,17 @@ import jaseto.Jaseto.E;
 public class nullDriver extends Driver
 {
 	@Override
+	protected String getTypeName(Object o)
+	{
+		return "null";
+	}
+
+	@Override
 	public Object instantiate(String qName, Attributes attributes, Stack<E> stack)
 	{
 		return null;
 	}
 
-	@Override
-	protected String getElementName()
-	{
-		return "null";
-	}
-	
 	@Override
 	public void attachChild(Object parent, E child, Stack<E> stack, int childIndex)
 	{
@@ -28,13 +28,13 @@ public class nullDriver extends Driver
 	}
 
 	@Override
-	public void printChildren(Object o, PrintWriter w, Registry registry)
+	public void forEachChildOf(Object o, Consumer c)
 	{
 	}
 
 	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
+	public String toString(Object o)
 	{
-		attr.remove("id");
+		return null;
 	}
 }

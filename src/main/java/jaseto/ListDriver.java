@@ -1,7 +1,7 @@
 package jaseto;
 
-import java.io.PrintWriter;
 import java.util.List;
+import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.Stack;
 import jaseto.Jaseto.E;
@@ -16,23 +16,24 @@ public class ListDriver extends ClassDriver
 	}
 
 	@Override
-	public void printChildren(Object parent, PrintWriter w, Registry registry)
+	public void forEachChildOf(Object parent, Consumer c)
 	{
-		for (Object c : (List) parent)
+		for (Object child : (List) parent)
 		{
-			Jaseto.print(c, w, registry, new AttributeMap());
+			c.accept(child);
 		}
-	}
-
-	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
-	{
 	}
 
 	@Override
 	public Class getHandledType()
 	{
 		return List.class;
+	}
+
+	@Override
+	public String toString(Object o)
+	{
+		return null;
 	}
 
 }

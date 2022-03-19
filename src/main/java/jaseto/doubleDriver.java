@@ -9,8 +9,6 @@ final class doubleDriver extends PrimitiveDriver
 		return Double.valueOf(s);
 	}
 
-
-	
 	@Override
 	public Class getHandledType()
 	{

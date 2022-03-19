@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 public class AttributeMap extends HashMap<String, String>
 {
+	public String elementName = "object";
+	
 	@Override
 	public String toString()
 	{

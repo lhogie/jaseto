@@ -15,11 +15,13 @@ public class StringDriver extends StringableDriver
 		return String.class;
 	}
 
-	@Override
+//	@Override
 	protected void adaptAttributes(AttributeMap attr, Object o)
 	{
-		super.adaptAttributes(attr, o);
+//		super.adaptAttributes(attr, o);
 
 		attr.remove("id");
 	}
+
+	
 }

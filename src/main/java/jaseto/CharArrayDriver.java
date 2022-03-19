@@ -2,12 +2,6 @@ package jaseto;
 
 public class CharArrayDriver extends StringableDriver
 {
-	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
-	{
-		super.adaptAttributes(attr, o);
-		attr.put("class", "char[]");
-	}
 
 	@Override
 	public String toString(Object o)
@@ -25,5 +19,11 @@ public class CharArrayDriver extends StringableDriver
 	public Class getHandledType()
 	{
 		return char[].class;
+	}
+	
+	@Override
+	protected void adapt(AttributeMap attr)
+	{
+		attr.put("class", "char[]");
 	}
 }

@@ -1,38 +1,25 @@
 package jaseto;
 
-import java.io.PrintWriter;
-import java.util.function.Consumer;
+import toools.text.xml.DNode;
 
-import org.xml.sax.Attributes;
-
-import it.unimi.dsi.fastutil.Stack;
-import jaseto.Jaseto.E;
-
-public abstract class StringableDriver extends ClassDriver
-{
+public abstract class StringableDriver extends Driver {
+	public String toString(Object o) {
+		return o.toString();
+	}
 
 	public abstract Object toObject(String s);
 
 	@Override
-	public String toString(Object o)
-	{
-		return o.toString();
+	public final ObjectNode toNode(Object o, Registry registry) {
+		ObjectNode n = new ObjectNode(getClassName(), o, registry);
+		n.getAttributes().put("value", toString(o));
+		return n;
 	}
 
-	@Override
-	public Object instantiate(String qName, Attributes attributes, Stack<E> stack)
-	{
-		return toObject(attributes.getValue("value"));
-	}
+	protected abstract String getClassName();
 
 	@Override
-	public void attachChild(Object parent, E child, Stack<E> stack, int childIndex)
-	{
-		throw new IllegalStateException(stack.top().object + " shouldn't have child");
-	}
-
-	@Override
-	public void forEachChildOf(Object o, Consumer c)
-	{
+	public final Object toObject(DNode n) {
+		return toObject(n.getAttributes().get("value"));
 	}
 }

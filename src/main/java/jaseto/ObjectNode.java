@@ -1,4 +1,4 @@
-package jaseto2;
+package jaseto;
 
 import toools.text.xml.DNode;
 

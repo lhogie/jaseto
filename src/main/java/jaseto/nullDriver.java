@@ -1,40 +1,21 @@
 package jaseto;
 
-import java.util.function.Consumer;
-
-import org.xml.sax.Attributes;
-
-import it.unimi.dsi.fastutil.Stack;
-import jaseto.Jaseto.E;
+import toools.text.xml.DNode;
 
 public class nullDriver extends Driver
 {
+
 	@Override
-	protected String getTypeName(Object o)
+	public ObjectNode toNode(Object o, Registry registry)
 	{
-		return "null";
+		ObjectNode n = new ObjectNode("null", null, registry);
+		return n;
 	}
 
 	@Override
-	public Object instantiate(String qName, Attributes attributes, Stack<E> stack)
+	public Object toObject(DNode n)
 	{
 		return null;
 	}
 
-	@Override
-	public void attachChild(Object parent, E child, Stack<E> stack, int childIndex)
-	{
-		throw new IllegalStateException("shouldn't have children");
-	}
-
-	@Override
-	public void forEachChildOf(Object o, Consumer c)
-	{
-	}
-
-	@Override
-	public String toString(Object o)
-	{
-		return null;
-	}
 }

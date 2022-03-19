@@ -1,6 +1,6 @@
 package jaseto;
 
-public class intDriver extends PrimitiveDriver
+public class intDriver extends StringableDriver
 {
 
 	@Override
@@ -9,12 +9,9 @@ public class intDriver extends PrimitiveDriver
 		return Integer.valueOf(s);
 	}
 
-	
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return int.class;
+		return "int";
 	}
-
-
 }

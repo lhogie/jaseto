@@ -1,6 +1,6 @@
 package jaseto;
 
-final class longDriver extends PrimitiveDriver
+final class longDriver extends StringableDriver
 {
 
 	@Override
@@ -10,8 +10,8 @@ final class longDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return long.class;
+		return "long";
 	}
 }

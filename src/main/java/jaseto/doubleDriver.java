@@ -1,6 +1,6 @@
 package jaseto;
 
-final class doubleDriver extends PrimitiveDriver
+final class doubleDriver extends StringableDriver
 {
 
 	@Override
@@ -10,9 +10,8 @@ final class doubleDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return double.class;
+		return "double";
 	}
-
 }

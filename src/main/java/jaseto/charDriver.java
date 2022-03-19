@@ -1,6 +1,6 @@
 package jaseto;
 
-final class charDriver extends PrimitiveDriver
+final class charDriver extends StringableDriver
 {
 	@Override
 	public Object toObject(String s)
@@ -9,9 +9,8 @@ final class charDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return char.class;
+		return "char";
 	}
-
 }

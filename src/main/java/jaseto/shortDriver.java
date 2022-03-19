@@ -1,6 +1,6 @@
 package jaseto;
 
-final class shortDriver extends PrimitiveDriver
+final class shortDriver extends StringableDriver
 {
 
 	@Override
@@ -9,12 +9,9 @@ final class shortDriver extends PrimitiveDriver
 		return Short.valueOf(s);
 	}
 
-	
-
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return short.class;
+		return "short";
 	}
-
 }

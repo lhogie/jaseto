@@ -1,6 +1,6 @@
 package jaseto;
 
-final class byteDriver extends PrimitiveDriver
+final class byteDriver extends StringableDriver
 {
 	@Override
 	public Object toObject(String s)
@@ -9,9 +9,8 @@ final class byteDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return byte.class;
+		return "byte";
 	}
-
 }

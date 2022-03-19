@@ -4,24 +4,15 @@ public class StringDriver extends StringableDriver
 {
 
 	@Override
-	public String toObject(String s)
+	public Object toObject(String s)
 	{
 		return s;
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return String.class;
+		return "string";
 	}
 
-//	@Override
-	protected void adaptAttributes(AttributeMap attr, Object o)
-	{
-//		super.adaptAttributes(attr, o);
-
-		attr.remove("id");
-	}
-
-	
 }

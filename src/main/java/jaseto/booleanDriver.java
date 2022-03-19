@@ -1,8 +1,14 @@
 package jaseto;
 
-final class booleanDriver extends PrimitiveDriver
+final class booleanDriver extends StringableDriver implements ClassDriver
 {
 
+	@Override
+	public Class getSupportedClass()
+	{
+		return boolean.class;
+	}
+	
 	@Override
 	public Object toObject(String s)
 	{
@@ -10,14 +16,9 @@ final class booleanDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return boolean.class;
+		return "boolean";
 	}
-	
-	@Override
-	protected void adapt(AttributeMap attr)
-	{
-		attr.put("class", "boolean[]");
-	}
+
 }

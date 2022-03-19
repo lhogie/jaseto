@@ -1,6 +1,6 @@
 package jaseto;
 
-final class floatDriver extends PrimitiveDriver
+final class floatDriver extends StringableDriver
 {
 
 	@Override
@@ -10,9 +10,8 @@ final class floatDriver extends PrimitiveDriver
 	}
 
 	@Override
-	public Class getHandledType()
+	protected String getClassName()
 	{
-		return float.class;
+		return "float";
 	}
-
 }

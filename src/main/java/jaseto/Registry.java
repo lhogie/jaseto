@@ -1,43 +1,37 @@
 package jaseto;
 
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Registry
-{
-	private final Int2ObjectMap m = new Int2ObjectOpenHashMap();
+import toools.io.Cout;
 
-	public boolean contains(Object o)
-	{
-		return m.containsKey(id(o));
-	}
+public class Registry {
+	private static class Entry {
+		Object o;
+		ObjectNode n;
 
-	public void add(Object o)
-	{
-		m.put(id(o), o);
-	}
-
-	public Object get(int id)
-	{
-		return m.get(id);
-	}
-
-	private Int2IntOpenHashMap translation = new Int2IntOpenHashMap();
-
-	public int id(Object o)
-	{
-		int ihc = System.identityHashCode(o);
-
-		if (translation.containsKey(ihc))
-		{
-			return translation.get(ihc);
+		public Entry(Object object, ObjectNode node) {
+			this.o = object;
+			this.n = node;
 		}
-		else
-		{
-			int id = translation.size();
-			translation.put(ihc, id);
-			return id;
-		}
+	}
+
+	private final Map<Integer, Entry> map = new HashMap<>();
+
+	public boolean contains(Object o) {
+		return map.containsKey(id(o));
+	}
+
+	public void add(Object o, ObjectNode n) {
+		Cout.debug("adding " + o + " in " + n);
+		map.put(id(o), new Entry(o, n));
+	}
+
+	public ObjectNode getNode(Object o) {
+		return map.get(id(o)).n;
+	}
+
+	public int id(Object o) {
+		return System.identityHashCode(o);
 	}
 }

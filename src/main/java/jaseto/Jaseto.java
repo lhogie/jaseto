@@ -5,12 +5,10 @@ import java.util.Map;
 
 import toools.text.xml.DNode;
 
-public class Jaseto
-{
+public class Jaseto {
 	private static final Map<Class, Driver> classDrivers = new HashMap<>();
 
-	static
-	{
+	static {
 		registerClassDriver(int.class, new intDriver());
 		registerClassDriver(boolean.class, new booleanDriver());
 		registerClassDriver(byte.class, new byteDriver());
@@ -32,44 +30,34 @@ public class Jaseto
 		registerClassDriver(String.class, new StringDriver());
 	}
 
-	public static void registerClassDriver(Class targetClass, Driver driver)
-	{
+	public static void registerClassDriver(Class targetClass, Driver driver) {
 		classDrivers.put(targetClass, driver);
 	}
 
-	static Driver getDriver(Object o)
-	{
-		if (o ==null)
+	static Driver getDriver(Object o) {
+		if (o == null)
 			return new nullDriver();
-		
+
 		Driver driver = classDrivers.get(o.getClass());
 
-		if (driver != null)
-		{
+		if (driver != null) {
 			return driver;
-		}
-		else if (o.getClass().isArray())
-		{
+		} else if (o.getClass().isArray()) {
 			return new ArrayDriver();
-		}
-		else
-		{
+		} else {
 			return new IntrospectingDriver();
 		}
 	}
 
-	public static DNode toNode(Object o)
-	{
+	public static DNode toNode(Object o) {
 		return toNode(o, new Registry());
 	}
 
-	static ObjectNode toNode(Object o, Registry registry)
-	{
+	static ObjectNode toNode(Object o, Registry registry) {
 		if (registry == null)
 			registry = new Registry();
 
-		if (registry.contains(o))
-		{
+		if (registry.contains(o)) {
 			registry.getNode(o).setID(registry.id(o));
 			ObjectNode refNode = new ObjectNode("object", o, registry);
 			refNode.setID(registry.id(o));

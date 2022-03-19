@@ -1,9 +1,7 @@
 package jaseto;
 
-public class Demo
-{
-	private static class TestType
-	{
+public class Demo {
+	private static class TestType {
 		String name = "coucou";
 		boolean b = true;
 		byte bb = 0x7;
@@ -11,7 +9,7 @@ public class Demo
 		float f = 0.1f;
 		double d = Math.PI;
 		short s = 4;
-		int number = - 1;
+		int number = -1;
 		long l = Long.MAX_VALUE;
 		Object testNull = null;
 		Object cycle = this;
@@ -20,8 +18,7 @@ public class Demo
 		String[] arrayString = new String[] { "Luc", "Elisa" };
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		System.out.println(Jaseto.toNode(new TestType()));
 	}
 }

@@ -1,18 +1,10 @@
 package jaseto;
 
-public class StringDriver extends StringableDriver
-{
+public class StringDriver extends StringableNode {
 
 	@Override
-	public Object toObject(String s)
-	{
+	public Object toObject(String s) {
 		return s;
-	}
-
-	@Override
-	protected String getClassName()
-	{
-		return "string";
 	}
 
 }

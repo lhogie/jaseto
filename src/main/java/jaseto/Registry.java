@@ -28,7 +28,9 @@ public class Registry {
 	}
 
 	public ObjectNode getNode(Object o) {
-		return map.get(id(o)).n;
+		int id = id(o);
+		var e = map.get(id);
+		return e == null ? null : e.n;
 	}
 
 	public int id(Object o) {

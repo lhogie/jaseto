@@ -1,17 +1,10 @@
 package jaseto;
 
-final class floatDriver extends StringableDriver
-{
+public class floatDriver extends StringableNode {
 
 	@Override
-	public Object toObject(String s)
-	{
+	public Object toObject(String s) {
 		return Float.valueOf(s);
 	}
 
-	@Override
-	protected String getClassName()
-	{
-		return "float";
-	}
 }

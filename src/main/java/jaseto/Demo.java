@@ -17,8 +17,18 @@ public class Demo {
 		boolean[] arrayBoolean = new boolean[] { true, false };
 		String[] arrayString = new String[] { "Luc", "Elisa" };
 	}
+	
+	private static class TestType2 {
+		boolean b = true;
+	}
+
 
 	public static void main(String[] args) {
-		System.out.println(Jaseto.toNode(new TestType()));
+		try {
+			System.out.println(Jaseto.toNode(new TestType2()));
+		}
+		catch (StackOverflowError e) {
+			System.err.println(e);
+		}
 	}
 }

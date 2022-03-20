@@ -1,17 +1,5 @@
 package jaseto;
 
-final class longDriver extends StringableDriver
-{
+public class longDriver extends Node {
 
-	@Override
-	public Object toObject(String s)
-	{
-		return Long.valueOf(s);
-	}
-
-	@Override
-	protected String getClassName()
-	{
-		return "long";
-	}
 }

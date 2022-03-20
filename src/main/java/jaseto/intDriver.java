@@ -1,17 +1,10 @@
 package jaseto;
 
-public class intDriver extends StringableDriver
-{
+public class intDriver extends StringableNode {
 
 	@Override
-	public Object toObject(String s)
-	{
-		return Integer.valueOf(s);
+	public Object toObject(String s) {
+		return Integer.parseInt(s);
 	}
 
-	@Override
-	protected String getClassName()
-	{
-		return "int";
-	}
 }

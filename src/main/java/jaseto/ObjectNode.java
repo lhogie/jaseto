@@ -1,25 +1,25 @@
 package jaseto;
 
-import toools.text.xml.DNode;
+import java.io.IOException;
+import java.io.Writer;
 
-public class ObjectNode extends DNode {
-
-	public ObjectNode(String name, Object o, Registry registry) {
-		super(name);
-
-		if (!registry.contains(o))
-			registry.add(o, this);
+public  class ObjectNode extends Node {
+	public boolean isReferenceNode;
+	public boolean isReferringNode;
+	public int id;
+	
+	@Override
+	public void fill(Object o, Registry registry) {
+		super.fill(o, registry);
+		this.id = System.identityHashCode(o);
 	}
 
-	public void setID(int id) {
-		getAttributes().put("id", "" + id);
-	}
+	@Override
+	public void toJSON(Writer w) throws IOException {
+		super.toJSON(w);
 
-	public void setClass(Class c) {
-		getAttributes().put("class", c.getName());
-	}
-
-	public String getClassName() {
-		return getAttributes().get("class");
+		if (isReferenceNode || isReferringNode) {
+			w.write("id=" + id);
+		}
 	}
 }

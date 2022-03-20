@@ -1,6 +1,6 @@
 package jaseto;
 
-final class doubleDriver extends StringableDriver
+public  class doubleDriver extends StringableNode
 {
 
 	@Override
@@ -9,9 +9,4 @@ final class doubleDriver extends StringableDriver
 		return Double.valueOf(s);
 	}
 
-	@Override
-	protected String getClassName()
-	{
-		return "double";
-	}
 }

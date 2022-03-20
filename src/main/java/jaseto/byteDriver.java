@@ -1,16 +1,8 @@
 package jaseto;
 
-final class byteDriver extends StringableDriver
-{
+public final class byteDriver extends StringableNode {
 	@Override
-	public Object toObject(String s)
-	{
+	public Object toObject(String s) {
 		return Byte.parseByte(s);
-	}
-
-	@Override
-	protected String getClassName()
-	{
-		return "byte";
 	}
 }

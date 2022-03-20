@@ -3,68 +3,79 @@ package jaseto;
 import java.util.HashMap;
 import java.util.Map;
 
-import toools.text.xml.DNode;
+import toools.io.Cout;
+import toools.reflect.Clazz;
 
 public class Jaseto {
-	private static final Map<Class, Driver> classDrivers = new HashMap<>();
+	private static final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 
 	static {
-		registerClassDriver(int.class, new intDriver());
-		registerClassDriver(boolean.class, new booleanDriver());
-		registerClassDriver(byte.class, new byteDriver());
-		registerClassDriver(char.class, new charDriver());
-		registerClassDriver(short.class, new shortDriver());
-		registerClassDriver(long.class, new longDriver());
-		registerClassDriver(float.class, new floatDriver());
-		registerClassDriver(double.class, new doubleDriver());
+		registerNode(int.class, intDriver.class);
+		registerNode(boolean.class, booleanDriver.class);
+		registerNode(byte.class, byteDriver.class);
+		registerNode(char.class, charDriver.class);
+		registerNode(short.class, shortDriver.class);
+		registerNode(long.class, longDriver.class);
+		registerNode(float.class, floatDriver.class);
+		registerNode(double.class, doubleDriver.class);
 
-		registerClassDriver(Integer.class, new intDriver());
-		registerClassDriver(Boolean.class, new booleanDriver());
-		registerClassDriver(Byte.class, new byteDriver());
-		registerClassDriver(Character.class, new charDriver());
-		registerClassDriver(Short.class, new shortDriver());
-		registerClassDriver(Long.class, new longDriver());
-		registerClassDriver(Float.class, new floatDriver());
-		registerClassDriver(Double.class, new doubleDriver());
+		registerNode(Integer.class, intDriver.class);
+		registerNode(Boolean.class, booleanDriver.class);
+		registerNode(Byte.class, byteDriver.class);
+		registerNode(Character.class, charDriver.class);
+		registerNode(Short.class, shortDriver.class);
+		registerNode(Long.class, longDriver.class);
+		registerNode(Float.class, floatDriver.class);
+		registerNode(Double.class, doubleDriver.class);
 
-		registerClassDriver(String.class, new StringDriver());
+		registerNode(String.class, StringDriver.class);
 	}
 
-	public static void registerClassDriver(Class targetClass, Driver driver) {
+	public static void registerNode(Class targetClass, Class<? extends Node> driver) {
 		classDrivers.put(targetClass, driver);
 	}
 
-	static Driver getDriver(Object o) {
-		if (o == null)
-			return new nullDriver();
+	public static Class<? extends Node> lookupNodeClass(Class c) {
+		if (c == null)
+			return nullDriver.class;
 
-		Driver driver = classDrivers.get(o.getClass());
+		var driver = classDrivers.get(c);
 
 		if (driver != null) {
 			return driver;
-		} else if (o.getClass().isArray()) {
-			return new ArrayDriver();
+		} else if (c.isArray()) {
+			return ArrayNode.class;
 		} else {
-			return new IntrospectingDriver();
+			return IntrospectingMapNode.class;
 		}
 	}
 
-	public static DNode toNode(Object o) {
-		return toNode(o, new Registry());
+	public static ObjectNode toNode(Object o) {
+		return (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry());
 	}
 
-	static ObjectNode toNode(Object o, Registry registry) {
-		if (registry == null)
-			registry = new Registry();
+	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry) {
+		Cout.debug(o.getClass() + "   " + nodeClass);
 
-		if (registry.contains(o)) {
-			registry.getNode(o).setID(registry.id(o));
-			ObjectNode refNode = new ObjectNode("object", o, registry);
-			refNode.setID(registry.id(o));
-			return refNode;
+		if (MuttableNode.class.isAssignableFrom(nodeClass)) {
+			var newNode = Clazz.makeInstance(nodeClass);
+			newNode.fill(o, registry);
+			return newNode;
+		} else {
+			int id = registry.id(o);
+			var alreadyInNode = registry.getNode(id);
+
+			if (alreadyInNode == null) {
+				var node = (ObjectNode) Clazz.makeInstance(nodeClass);
+				node.fill(o, registry);
+				return node;
+			} else {
+				var newNode = (ObjectNode) Clazz.makeInstance(nodeClass);
+				newNode.fill(o, registry);
+				newNode.isReferenceNode = alreadyInNode.isReferringNode = true;
+				return newNode;
+			}
 		}
 
-		return getDriver(o).toNode(o, registry);
 	}
-
 }

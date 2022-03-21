@@ -30,11 +30,11 @@ class DemoType {
 	}
 ```
 
-The command 
+The command:
 ```java
 String json = Jaseto.toJSON(new DemoType());
 ```
-will produce the following JSON text:
+produces the following JSON text:
 ```json
 {
 	"#ID": 2111991224,

@@ -64,8 +64,13 @@ public class Jaseto {
 		}
 	}
 
-	public static ObjectNode toNode(Object o, SerializationController sc) {
-		return (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+	public static String toJSON(Object o) {
+		return toJSON(o, false, new DefaultSerializationController());
+	}
+
+	public static String toJSON(Object o, boolean beautify, SerializationController sc) {
+		var node = (ObjectNode)  toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+		return node.toJSON(beautify);
 	}
 
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {

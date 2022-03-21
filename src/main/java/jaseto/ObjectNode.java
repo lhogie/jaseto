@@ -8,7 +8,7 @@ public class ObjectNode extends IDedNode {
 
 	public ObjectNode(Object o, Registry registry, SerializationController sc) {
 		super(o, registry);
-		this.clazz = sc.classNameAlias(o.getClass());
+		this.clazz = sc.getClassName(o.getClass());
 	}
 
 	@Override

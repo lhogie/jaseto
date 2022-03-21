@@ -21,13 +21,18 @@ public class DefaultSerializationController implements SerializationController {
 	}
 
 	@Override
-	public String classNameAlias(Class<? extends Object> c) {
+	public String getClassName(Class<? extends Object> c) {
 		return c.getName();
 	}
 
 	@Override
 	public String toString(Object o) {
 		return o.toString();
+	}
+
+	@Override
+	public String getClassNameKey() {
+		return "#class";
 	}
 
 }

@@ -12,8 +12,8 @@ public interface SerializationController {
 
 	void addKeys(Map<String, Node> keys, Object from);
 
-	String classNameAlias(Class<? extends Object> class1);
+	String getClassName(Class<? extends Object> class1);
 
 	String toString(Object o);
-
+	public String getClassNameKey();
 }

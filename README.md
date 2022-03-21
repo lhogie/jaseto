@@ -17,8 +17,27 @@ Jaseto is being developed in the context of Research experiments at [I3S laborat
 
 
 # Usage
+Serializing an object of following type:
 ```java
-String json = Jaseto.toNode(anObject).toJSON();
+class DemoType {
+		String foo = "bar";
+		boolean bool = true;
+		Boolean boolObject = true;
+		double pi = Math.PI;
+		long l = Long.MAX_VALUE;
+		Object aNullReference = null;
+		Object aCyclicReference = this;
+		Object[] array = new Object[] { "Java", true, this };
+	}
+```
+
+The command 
+```java
+String json = Jaseto.toJSON(anObject);
+```
+will produce the following JSON text:
+```json
+{}
 ```
 
 ## Customization of the JSON text
@@ -52,6 +71,17 @@ public String fieldName(FF field) {
 }
 ```
 
+### Adding keys
+Serialization only considers fields. Jackson also considers getter methods, assuming that they have no side effect. Jaseto does not take that risk.
+But sometimes the set of fields is not enough to completely describe an object. Jaseto enables the users to augment the default description of an object by adding new keys on the fly.
+This example describes if an object is visible by comparing its color to the color of its parent graphic environnement.
+```java
+@Override
+public void addKeys(Map<String, Node> keys, Object from) {
+	keys.put("visible", from.getColor() != from.getParent().getColor());
+}
+```
+
 ### Renaming a class name
 This prints pretty type names for usual Java types.
 ```java
@@ -78,13 +108,13 @@ public String classNameAlias(Class<? extends Object> class1) {
 }
 ```
 
-### Not showing the class name
-Serialization only considers fields. Jackson also considers getter methods, assuming that they have no side effect. Jaseto does not take that risk.
-But sometimes the set of fields is not enough to completely describe an object. Jaseto enables the users to augment the default description of an object by adding new keys on the fly.
-This example describes if an object is visible by comparing its color to the color of its parent graphic environnement.
+### Changing the key for the class name
+By default, the key exposing the class is #class. It can be changed everywhere by redefining
 ```java
 @Override
-public void addKeys(Map<String, Node> keys, Object from) {
-	keys.put("visible", from.getColor() != from.getParent().getColor());
+public String getClassNameKey() {
+	return "class name";
 }
 ```
+If set to null, the class name won't be shown.
+

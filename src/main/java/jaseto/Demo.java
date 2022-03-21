@@ -22,50 +22,56 @@ public class Demo {
 		String[] arrayString = new String[] { "Luc", "Elisa" };
 	}
 	
+	private static class DemoType {
+		String foo = "bar";
+		boolean bool = true;
+		Boolean boolObject = true;
+		double pi = Math.PI;
+		long l = Long.MAX_VALUE;
+		Object aNullReference = null;
+		Object aCyclicReference = this;
+		Object[] array = new Object[] { "Java", true, this };
+	}
+
 	private static class TestType2 {
 		boolean b = true;
 		String name = "coucou";
 	}
 
-
 	public static void main(String[] args) {
 		try {
-			System.out.println(Jaseto.toNode(new TestType(), new DefaultSerializationController()));
+			System.out.println(Jaseto.toJSON(new TestType(), true, new SerializationController() {
 
-			System.out.println(Jaseto.toNode(new TestType(), new SerializationController() {
-				
-				@Override
-				public String toString(Object o) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-				
-				@Override
-				public boolean serializeArrayElement(Object array, int i, Object element) {
-					// TODO Auto-generated method stub
-					return false;
-				}
-				
 				@Override
 				public String fieldName(FF field) {
-					// TODO Auto-generated method stub
 					return null;
 				}
-				
+
 				@Override
-				public String classNameAlias(Class<? extends Object> class1) {
-					// TODO Auto-generated method stub
-					return null;
+				public boolean serializeArrayElement(Object array, int i, Object element) {
+					return false;
 				}
-				
+
 				@Override
 				public void addKeys(Map<String, Node> keys, Object from) {
-					// TODO Auto-generated method stub
-					
 				}
-			};()));
-}
-		catch (StackOverflowError e) {
+
+				@Override
+				public String getClassName(Class<? extends Object> class1) {
+					return null;
+				}
+
+				@Override
+				public String getClassNameKey() {
+					return "#class";
+				}
+
+				@Override
+				public String toString(Object o) {
+					return null;
+				}
+			}));
+		} catch (StackOverflowError e) {
 			System.err.println(e);
 //			e.printStackTrace();
 		}

@@ -1,6 +1,8 @@
 package jaseto;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import toools.reflect.Introspector.FF;
 
@@ -21,7 +23,7 @@ public class Demo {
 		boolean[] arrayBoolean = new boolean[] { true, false };
 		String[] arrayString = new String[] { "Luc", "Elisa" };
 	}
-	
+
 	private static class DemoType {
 		String foo = "bar";
 		boolean bool = true;
@@ -33,23 +35,22 @@ public class Demo {
 		Object[] array = new Object[] { "Java", true, this };
 	}
 
-	private static class TestType2 {
-		boolean b = true;
-		String name = "coucou";
-	}
-
 	public static void main(String[] args) {
 		try {
 			System.out.println(Jaseto.toJSON(new TestType(), true, new SerializationController() {
 
 				@Override
 				public String fieldName(FF field) {
-					return null;
+					if (field.getName().equals("nastyField")) {
+						return null;
+					}
+
+					return field.getName();
 				}
 
 				@Override
 				public boolean serializeArrayElement(Object array, int i, Object element) {
-					return false;
+					return true;
 				}
 
 				@Override
@@ -58,8 +59,15 @@ public class Demo {
 
 				@Override
 				public String getClassName(Class<? extends Object> class1) {
-					return null;
-				}
+					if (class1 == String.class) {
+						return "string";
+					} else if (class1 == Set.class) {
+						return "set";
+					} else if (class1 == List.class) {
+						return "list";
+					}
+					
+					return class1.getName();				}
 
 				@Override
 				public String getClassNameKey() {
@@ -68,7 +76,7 @@ public class Demo {
 
 				@Override
 				public String toString(Object o) {
-					return null;
+					return o.toString();
 				}
 			}));
 		} catch (StackOverflowError e) {

@@ -104,9 +104,9 @@ This prints pretty type names for usual Java types.
 public String classNameAlias(Class<? extends Object> class1) {
 	if (class1 == String.class) {
 		return "string";
-	} else if (class1 instanceof Set.class) {
+	} else if (class1 == Set.class) {
 		return "set";
-	} else if (class1 instanceof List.class) {
+	} else if (class1 == List.class) {
 		return "list";
 	}
 	

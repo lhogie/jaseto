@@ -30,7 +30,7 @@ class DemoType {
 	}
 ```
 
-The command:
+This simple instruction:
 ```java
 String json = Jaseto.toJSON(new DemoType());
 ```

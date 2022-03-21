@@ -4,12 +4,11 @@ Jaseto is JSON serializer for Java objects.
 
 Other such tools to do that include [Jackson serializer](https://www.baeldung.com/jackson-custom-serialization) and GSON. These were made to enable the interoperation of heterogenous applications. To this purpose they provide both serialization and deseriliation. However, a prime application of serializer is to expose object models to Javascript client applications, using JSON encoding. 
 
-Unlike these tools, Jasto:
-- provides a comprehensive API
-- focuses on exposing an OO system to a text
-- does not support deserizaliation
-- support cyclic aggregation, making it able to serialize graphs
-- is highly customizable
+Unlike these tools, Jaseto:
+- a simpler API
+- deeper customization abilities
+- focuses on exposing an OO system to a text in the most appropriate way, deserizaliation is not considered
+- supports cyclic aggregation, making it able to serialize graphs
 
 
 Jaseto is being developed in the context of Research experiments at [I3S laboratory](https://www.i3s.unice.fr/) of [Universté Côte d'Azur](https://univ-cotedazur.eu/).
@@ -20,15 +19,15 @@ Jaseto is being developed in the context of Research experiments at [I3S laborat
 Serializing an object of following type:
 ```java
 class DemoType {
-		String foo = "bar";
-		boolean bool = true;
-		Boolean boolObject = true;
-		double pi = Math.PI;
-		long l = Long.MAX_VALUE;
-		Object aNullReference = null;
-		Object aCyclicReference = this;
-		Object[] array = new Object[] { "Java", true, this };
-	}
+	String foo = "bar";
+	boolean bool = true;
+	Boolean boolObject = true;
+	double pi = Math.PI;
+	long l = Long.MAX_VALUE;
+	Object aNullReference = null;
+	Object aCyclicReference = this;
+	Object[] array = new Object[] { "Java", true, this };
+}
 ```
 
 The command 

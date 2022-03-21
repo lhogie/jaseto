@@ -8,9 +8,9 @@ import toools.io.Cout;
 public class Registry {
 	private static class Entry {
 		Object o;
-		ObjectNode n;
+		IDedNode n;
 
-		public Entry(Object object, ObjectNode node) {
+		public Entry(Object object, IDedNode node) {
 			this.o = object;
 			this.n = node;
 		}
@@ -22,12 +22,12 @@ public class Registry {
 		return map.containsKey(id(o));
 	}
 
-	public void add(Object o, ObjectNode n) {
-		Cout.debug("adding " + o + " in " + n);
+	public void add(Object o, IDedNode n) {
+//		Cout.debug("adding " + o + " in " + n);
 		map.put(id(o), new Entry(o, n));
 	}
 
-	public ObjectNode getNode(Object o) {
+	public IDedNode getNode(Object o) {
 		int id = id(o);
 		var e = map.get(id);
 		return e == null ? null : e.n;

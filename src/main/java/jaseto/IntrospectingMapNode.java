@@ -5,15 +5,20 @@ import toools.reflect.Introspector.FF;
 
 public class IntrospectingMapNode extends MapNode {
 
-	@Override
-	public void fill(Object o, Registry registry) {
-		super.fill(o, registry);
+	public IntrospectingMapNode(Object o, Registry registry, SerializationController sc) {
+		super(o, registry, sc);
 
 		for (FF field : Introspector.getIntrospector(o.getClass()).getFields()) {
 			if (!field.isStatic() && !field.isTransient()) {
-				Class<? extends Node> fieldNode = Jaseto.lookupNodeClass(field.getType());
-				children.put(field.getName(), Jaseto.toNode(field.get(o), fieldNode, registry));
+				String newFieldName = sc.fieldName(field);
+				
+				if (newFieldName != null) {
+					Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(field.getType());
+					children.put(field.getName(), Jaseto.toNode(field.get(o), fieldNodeClass, registry, sc));
+				}
 			}
 		}
+
+		sc.addKeys(children, o);
 	}
 }

@@ -2,15 +2,14 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class MapNode extends ObjectNode {
-	public final Map<String, Node> children = new HashMap<>();
+	public final Map<String, Node> children = new TreeMap<>();
 
-	@Override
-	public void fill(Object o, Registry registry) {
-		super.fill(o, registry);
+	public MapNode(Object o, Registry registry, SerializationController sc) {
+		super(o, registry, sc);
 	}
 
 	@Override
@@ -20,15 +19,14 @@ public abstract class MapNode extends ObjectNode {
 		w.write(", ");
 
 		var i = children.entrySet().iterator();
-		
-		while (i.hasNext())
-		{
+
+		while (i.hasNext()) {
 			var e = i.next();
 			w.write("\"" + e.getKey() + "\": ");
 			System.err.println(e.getKey());
 			System.err.println(e.getValue().getClass());
 			e.getValue().toJSON(w);
-			
+
 			if (i.hasNext()) {
 				w.write(", ");
 			}

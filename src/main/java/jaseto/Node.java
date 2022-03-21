@@ -6,23 +6,12 @@ import java.io.Writer;
 
 import toools.text.json.JSONUtils;
 
-public class Node {
-	public Class clazz;
-
-	public void fill(Object o, Registry registry) {
-		this.clazz = o.getClass();
-	}
-
-	public void toJSON(Writer w) throws IOException {
-		w.write("\"#class\": ");
-		w.write('"');
-		w.write(clazz.getName());
-		w.write('"');
-	}
+public abstract class Node {
+	public abstract void toJSON(Writer w) throws IOException;
 
 	@Override
 	public String toString() {
-		return toJSON(false);
+		return toJSON(true);
 	}
 
 	public String toJSON(boolean beautify) {
@@ -35,6 +24,6 @@ public class Node {
 		}
 
 		var s = w.toString();
-		return beautify? JSONUtils.beautify(s) : s ;
+		return beautify ? JSONUtils.beautify(s) : s;
 	}
 }

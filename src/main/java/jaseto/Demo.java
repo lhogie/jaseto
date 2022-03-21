@@ -20,15 +20,17 @@ public class Demo {
 	
 	private static class TestType2 {
 		boolean b = true;
+		String name = "coucou";
 	}
 
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(Jaseto.toNode(new TestType2()));
+			System.out.println(Jaseto.toNode(new TestType(), new DefaultSerializationController()));
 		}
 		catch (StackOverflowError e) {
 			System.err.println(e);
+//			e.printStackTrace();
 		}
 	}
 }

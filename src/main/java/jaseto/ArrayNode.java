@@ -2,12 +2,32 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayNode extends Node {
-	public String componentType;
-	List<Node> children = new ArrayList<>();
+import toools.reflect.Introspector;
+import toools.reflect.Introspector.FF;
+
+public class ArrayNode extends IDedNode {
+	private Class componentType;
+	private List<Node> children = new ArrayList<>();
+
+	public ArrayNode(Object o, Registry r, SerializationController sc) {
+		super(o, r);
+		
+		int len = Array.getLength(o);
+		this.componentType = o.getClass().getComponentType();
+		Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(componentType);
+		
+		for (int i = 0; i < len; ++i) {
+			var e = Array.get(o, i);
+			
+			if (sc.serializeArrayElement(o, i, e)) {
+				children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
+			}
+		}
+	}
 
 	@Override
 	public void toJSON(Writer w) throws IOException {

@@ -14,9 +14,12 @@ public class ObjectNode extends IDedNode {
 	@Override
 	public void toJSON(Writer w) throws IOException {
 		super.toJSON(w);
-		w.write("\"#class\": ");
-		w.write('"');
-		w.write(clazz);
-		w.write('"');
+		
+		if( clazz != null) {
+			w.write("\"#class\": ");
+			w.write('"');
+			w.write(clazz);
+			w.write('"');
+		}
 	}
 }

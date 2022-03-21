@@ -40,11 +40,28 @@ will produce the following JSON text:
 
 ## Customization of the JSON text
 The SerializationController interface enables deep customization of the output JSON text. A default implementation is provided.
+It provides a set of methods that can be implemented so as to match as much as possible the requirements of the client application.
+```java
+public interface SerializationController {
+	String fieldName(FF field);
+
+	boolean serializeArrayElement(Object array, int i, Object element);
+
+	void addKeys(Map<String, Node> keys, Object from);
+
+	String getClassName(Class<? extends Object> class1);
+
+	String toString(Object o);
+
+	public String getClassNameKey();
+}
+```
+
+To activate these changes, you can pass it as a parameter, like this:
 
 ```java
 String json = Jaseto.toJSON(new TestType(), new DefaultSerializationController();
 ```
-				
 
 ### Renaming a particular field
 This example convert all field names to upper case.
@@ -69,7 +86,7 @@ public String fieldName(FF field) {
 }
 ```
 
-### Adding keys
+### Modifying keys
 Serialization only considers fields. Jackson also considers getter methods, assuming that they have no side effect. Jaseto does not take that risk.
 But sometimes the set of fields is not enough to completely describe an object. Jaseto enables the users to augment the default description of an object by adding new keys on the fly.
 This example describes if an object is visible by comparing its color to the color of its parent graphic environnement.

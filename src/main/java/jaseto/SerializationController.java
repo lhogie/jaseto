@@ -5,7 +5,6 @@ import java.util.Map;
 import toools.reflect.Introspector.FF;
 
 public interface SerializationController {
-
 	String fieldName(FF field);
 
 	boolean serializeArrayElement(Object array, int i, Object element);
@@ -15,5 +14,6 @@ public interface SerializationController {
 	String getClassName(Class<? extends Object> class1);
 
 	String toString(Object o);
+
 	public String getClassNameKey();
 }

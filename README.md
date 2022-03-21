@@ -34,11 +34,7 @@ The command
 ```java
 String json = Jaseto.toJSON(new DemoType());
 ```
-will produce a JSON text on 1 line. After beautification via the command:
-```java
-json  = Jaseto.beautify(json);
-```
-It looks like this:
+will produce the following JSON text:
 ```json
 {
 	"#ID": 2111991224,

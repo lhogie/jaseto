@@ -32,20 +32,28 @@ String json = Jaseto.toNode(new TestType(), new DefaultSerializationController()
 ### renaming a particular field
 This example convert all field names to upper case.
 ```java=
-				@Override
-				public String fieldName(FF field) {
-					return field.getName().toUpperCase();
-				}
+@Override
+public String fieldName(FF field) {
+		return field.getName().toUpperCase();
+}
 ```
 
 
 ### exluding a particular field
+When the new name is set to null, the field is dropped.
 ```java=
-				@Override
-				public String fieldName(FF field) {
-					return null;
-				}
-````				
+@Override
+public String fieldName(FF field) {
+	if (field.getName().equals("nastyField")) {
+		return null;
+	}
+		
+	return field.getName();
+}
+```
+
+
+				
 				@Override
 				public String classNameAlias(Class<? extends Object> class1) {
 					// TODO Auto-generated method stub

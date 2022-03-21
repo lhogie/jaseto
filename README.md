@@ -31,7 +31,7 @@ class DemoType {
 
 The command 
 ```java
-String json = Jaseto.toJSON(anObject);
+String json = Jaseto.toJSON(new DemoType());
 ```
 will produce the following JSON text:
 ```json
@@ -42,7 +42,7 @@ will produce the following JSON text:
 The SerializationController interface enables deep customization of the output JSON text. A default implementation is provided.
 
 ```java
-String json = Jaseto.toNode(new TestType(), new DefaultSerializationController();
+String json = Jaseto.toJSON(new TestType(), new DefaultSerializationController();
 ```
 				
 

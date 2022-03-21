@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Registry {
 
-	private final Map<Integer, IDedNode> map = new HashMap<>();
+	public final Map<Integer, IDedNode> map = new HashMap<>();
 
 	public Registry() {
 	}

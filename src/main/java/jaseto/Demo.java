@@ -9,20 +9,20 @@ import toools.reflect.Introspector.FF;
 public class Demo {
 
 	private static class DemoType {
-		String foo = "bar";
-		boolean bool = true;
-		Boolean boolObject = false;
+		String aString = "bar";
+		boolean loveIsAll = true;
+		Boolean aBooleanObject = false;
 		double pi = Math.PI;
 		long maxLongValue = Long.MAX_VALUE;
 		Object aNullReference = null;
-//		Object aCyclicReference = this;
 		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8 };
 		char[] anArrayOfPrimitiveValues = "abcdef".toCharArray();
+		Object myself = this;
 	}
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(Jaseto.toJSON(new DemoType(), true, new SerializationController() {
+			var json = Jaseto.toJSON(new DemoType(), new SerializationController() {
 
 				@Override
 				public String fieldName(FF field) {
@@ -64,10 +64,13 @@ public class Demo {
 				public String toString(Object o) {
 					return o.toString();
 				}
-			}));
+			});
+			
+			json  = Jaseto.beautify(json);
+			System.out.println(json);
 		} catch (StackOverflowError e) {
 			System.err.println(e);
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import toools.text.json.JSONUtils;
+
 public class Jaseto {
 	private static final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 
@@ -60,41 +62,40 @@ public class Jaseto {
 	}
 
 	public static String toJSON(Object o, SerializationController sc) {
-		return toJSON(o, true, sc);
+		var node = (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+		return node.toJSON();
 	}
 
-	public static String toJSON(Object o, boolean beautify, SerializationController sc) {
-		var node = (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
-		return node.toJSON(beautify);
+	public static String beautify(String json) {
+		return JSONUtils.beautify(json);
 	}
 
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {
 		if (o == null) {
 			return new NullNode();
 		}
-		
+
 		if (ObjectNode.class.isAssignableFrom(nodeClass)) {
 			var alreadyInNode = (ObjectNode) registry.getNode(o);
 
 			if (alreadyInNode == null) {
-				var n = (ObjectNode) create(nodeClass, o, registry, sc);
-				registry.add(o, n);
+				var n = (ObjectNode) createNode(nodeClass, o, registry, sc);
 				return n;
 			} else {
-				var link = new IDedNode(o, registry);
-				link.showID = alreadyInNode.showID = true;
+				var link = new LinkNode(alreadyInNode.id);
+				alreadyInNode.showID = true;
 				return link;
 			}
 		} else {
-			return create(nodeClass, o, registry, sc);
+			return createNode(nodeClass, o, registry, sc);
 		}
 	}
 
-	private static <A extends Node> A create(Class<A> nodeClass, Object o, Registry registry,
+	private static <A extends Node> A createNode(Class<A> nodeClass, Object from, Registry registry,
 			SerializationController sc) {
 		try {
-			var c = nodeClass.getConstructor(Object.class, Registry.class, SerializationController.class);
-			A n = c.newInstance(o, registry, sc);
+			var constructor = nodeClass.getConstructor(Object.class, Registry.class, SerializationController.class);
+			A n = constructor.newInstance(from, registry, sc);
 			return n;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

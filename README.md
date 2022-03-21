@@ -17,15 +17,16 @@ Jaseto is being developed in the context of Research experiments at [I3S laborat
 # Usage
 Serializing an object of following type:
 ```java
-	class DemoType {
-		String foo = "bar";
-		boolean bool = true;
-		Boolean boolObject = false;
+class DemoType {
+		String aString = "bar";
+		boolean loveIsAll = true;
+		Boolean aBooleanObject = false;
 		double pi = Math.PI;
 		long maxLongValue = Long.MAX_VALUE;
 		Object aNullReference = null;
 		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8 };
 		char[] anArrayOfPrimitiveValues = "abcdef".toCharArray();
+		Object myself = this;
 	}
 ```
 
@@ -33,11 +34,21 @@ The command
 ```java
 String json = Jaseto.toJSON(new DemoType());
 ```
-will produce the following JSON text:
+will produce a JSON text on 1 line. After beautification via the command:
+```java
+json  = Jaseto.beautify(json);
+```
+It looks like this:
 ```json
 {
+  "#ID" : 2111991224,
   "#class" : "jaseto.Demo$DemoType",
+  "aBooleanObject" : {
+    "#class" : "java.lang.Boolean",
+    "value" : false
+  },
   "aNullReference" : null,
+  "aString" : "bar",
   "anArrayOfObjects" : [ "Java", {
     "#class" : "java.lang.Boolean",
     "value" : true
@@ -46,13 +57,11 @@ will produce the following JSON text:
     "value" : 9.8
   } ],
   "anArrayOfPrimitiveValues" : [ "a", "b", "c", "d", "e", "f" ],
-  "bool" : true,
-  "boolObject" : {
-    "#class" : "java.lang.Boolean",
-    "value" : false
-  },
-  "foo" : "bar",
+  "loveIsAll" : true,
   "maxLongValue" : 9223372036854775807,
+  "myself" : {
+    "src" : 2111991224
+  },
   "pi" : 3.141592653589793
 }
 ```

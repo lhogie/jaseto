@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import toools.text.json.JSONUtils;
-
 public abstract class Node {
 	public abstract void toJSON(PrintWriter w) throws IOException;
 
 	@Override
 	public String toString() {
-		return toJSON(true);
+		return toJSON();
 	}
 
-	public String toJSON(boolean beautify) {
+	public String toJSON() {
 		var sw = new StringWriter();
 		var w = new PrintWriter(sw);
 
@@ -25,6 +23,6 @@ public abstract class Node {
 		}
 
 		var s = sw.toString();
-		return beautify ? JSONUtils.beautify(s) : s;
+		return s;
 	}
 }

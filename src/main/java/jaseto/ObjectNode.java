@@ -18,6 +18,10 @@ public class ObjectNode extends IDedNode {
 		super.toJSON(w);
 
 		if (className != null) {
+			if (showID) {
+				w.print(", ");
+			}
+
 			w.print('"');
 			w.print(classNameKey);
 			w.print('"');

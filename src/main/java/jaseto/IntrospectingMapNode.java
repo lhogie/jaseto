@@ -11,10 +11,11 @@ public class IntrospectingMapNode extends MapNode {
 		for (FF field : Introspector.getIntrospector(o.getClass()).getFields()) {
 			if (!field.isStatic() && !field.isTransient()) {
 				String newFieldName = sc.fieldName(field);
-				
+
 				if (newFieldName != null) {
 					Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(field.getType());
-					children.put(field.getName(), Jaseto.toNode(field.get(o), fieldNodeClass, registry, sc));
+					var childNode = Jaseto.toNode(field.get(o), fieldNodeClass, registry, sc);
+					children.put(field.getName(), childNode);
 				}
 			}
 		}

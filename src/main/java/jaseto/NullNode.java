@@ -1,9 +1,12 @@
 package jaseto;
 
-public class NullNode extends StringNode {
+import java.io.IOException;
+import java.io.PrintWriter;
 
-	public NullNode() {
-		super(null, null, null);
+public class NullNode extends Node {
+
+	@Override
+	public void toJSON(PrintWriter w) throws IOException {
+		w.print("null");
 	}
-
 }

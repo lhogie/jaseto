@@ -17,21 +17,21 @@ Jaseto is being developed in the context of Research experiments at [I3S laborat
 
 
 #Usage
-```java=
+```java
 String json = Jaseto.toNode(anObject).toJSON();
 ```
 
 ##customization of the JSON text
 The SerializationController interface enables deep customization of the output JSON text. A default implementation is provided.
 
-```java=
+```java
 String json = Jaseto.toNode(new TestType(), new DefaultSerializationController();
 ```
 				
 
 ### renaming a particular field
 This example convert all field names to upper case.
-```java=
+```java
 @Override
 public String fieldName(FF field) {
 		return field.getName().toUpperCase();
@@ -41,7 +41,7 @@ public String fieldName(FF field) {
 
 ### exluding a particular field
 When the new name is set to null, the field is dropped.
-```java=
+```java
 @Override
 public String fieldName(FF field) {
 	if (field.getName().equals("nastyField")) {

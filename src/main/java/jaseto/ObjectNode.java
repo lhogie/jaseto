@@ -9,7 +9,7 @@ public class ObjectNode extends IDedNode {
 
 	public ObjectNode(Object o, Registry registry, SerializationController sc) {
 		super(o, registry);
-		this.className = o == null ? null : sc.getClassName(o.getClass());
+		this.className = sc.getClassName(o.getClass());
 		this.classNameKey = sc.getClassNameKey();
 	}
 

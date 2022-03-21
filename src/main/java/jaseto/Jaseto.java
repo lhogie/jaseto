@@ -66,8 +66,8 @@ public class Jaseto {
 		return node.toJSON();
 	}
 
-	public static String beautify(String json) {
-		return JSONUtils.beautify(json);
+	public static void validate(String json) {
+		JSONUtils.beautify(json);
 	}
 
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {

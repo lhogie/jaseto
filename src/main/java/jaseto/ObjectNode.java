@@ -19,9 +19,11 @@ public class ObjectNode extends IDedNode {
 
 		if (className != null) {
 			if (showID) {
-				w.print(", ");
+				w.print(",\n");
 			}
 
+			tab(w);
+			w.print('\t');
 			w.print('"');
 			w.print(classNameKey);
 			w.print('"');

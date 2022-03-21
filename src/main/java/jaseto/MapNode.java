@@ -14,22 +14,26 @@ public abstract class MapNode extends ObjectNode {
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
-		w.print("{");
+		w.print("{\n");
 		super.toJSON(w);
-		w.print(", ");
+		w.print(",\n");
 
 		var i = children.entrySet().iterator();
 
 		while (i.hasNext()) {
 			var e = i.next();
-			w.print("\"" + e.getKey() + "\": ");
+			tab(w);
+			w.print("\t\"" + e.getKey() + "\": ");
 			e.getValue().toJSON(w);
 
 			if (i.hasNext()) {
-				w.print(", ");
+				w.print(',');
 			}
+
+			w.println();
 		}
 
+		tab(w);
 		w.print("}");
 	}
 }

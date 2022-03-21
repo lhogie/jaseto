@@ -41,28 +41,27 @@ json  = Jaseto.beautify(json);
 It looks like this:
 ```json
 {
-  "#ID" : 2111991224,
-  "#class" : "jaseto.Demo$DemoType",
-  "aBooleanObject" : {
-    "#class" : "java.lang.Boolean",
-    "value" : false
-  },
-  "aNullReference" : null,
-  "aString" : "bar",
-  "anArrayOfObjects" : [ "Java", {
-    "#class" : "java.lang.Boolean",
-    "value" : true
-  }, {
-    "#class" : "java.lang.Double",
-    "value" : 9.8
-  } ],
-  "anArrayOfPrimitiveValues" : [ "a", "b", "c", "d", "e", "f" ],
-  "loveIsAll" : true,
-  "maxLongValue" : 9223372036854775807,
-  "myself" : {
-    "src" : 2111991224
-  },
-  "pi" : 3.141592653589793
+	"#ID": 2111991224,
+	"#class": "jaseto.Demo$DemoType",
+	"aBooleanObject": {
+		"#class": "java.lang.Boolean",
+		"value": false
+	},
+	"aNullReference": null,
+	"aString": "bar",
+	"anArrayOfObjects": ["Java", {
+			"#class": "java.lang.Boolean",
+			"value": true
+		}, {
+			"#class": "java.lang.Double",
+			"value": 9.8
+		}, {"#type": "link", "src": 2111991224}
+	],
+	"anArrayOfPrimitiveValues": ["a", "b", "c", "d", "e", "f"],
+	"loveIsAll": true,
+	"maxLongValue": 9223372036854775807,
+	"myself": {"#type": "link", "src": 2111991224},
+	"pi": 3.141592653589793
 }
 ```
 

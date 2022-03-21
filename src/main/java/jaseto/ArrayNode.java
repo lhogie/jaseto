@@ -9,6 +9,7 @@ import java.util.List;
 public class ArrayNode extends IDedNode {
 	private Class componentType;
 	private List<Node> children = new ArrayList<>();
+	boolean stringed;
 
 	public ArrayNode(Object o, Registry r, SerializationController sc) {
 		super(o, r);
@@ -17,7 +18,7 @@ public class ArrayNode extends IDedNode {
 		this.componentType = o.getClass().getComponentType();
 		Class<? extends Node> componentTypeNodeClass = Jaseto.lookupNodeClass(componentType);
 
-		boolean stringed = StringNode.class.isAssignableFrom(componentTypeNodeClass);
+		stringed = StringNode.class.isAssignableFrom(componentTypeNodeClass);
 
 		for (int i = 0; i < len; ++i) {
 			var e = Array.get(o, i);
@@ -25,9 +26,14 @@ public class ArrayNode extends IDedNode {
 			if (sc.serializeArrayElement(o, i, e)) {
 				// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
 				var nc = stringed ? componentTypeNodeClass : Jaseto.lookupNodeClass(e.getClass());
-				children.add(Jaseto.toNode(e, nc, r, sc));
+				add(Jaseto.toNode(e, nc, r, sc));
 			}
 		}
+	}
+
+	private void add(Node node) {
+		children.add(node);
+		node.parent = this;
 	}
 
 	@Override
@@ -39,11 +45,18 @@ public class ArrayNode extends IDedNode {
 			children.get(i).toJSON(w);
 
 			if (i < children.size() - 1) {
-				w.print(", ");
+				w.print(',');
+				w.print(' ');
 			}
 		}
 
-		w.print(']');
+		if (stringed) {
+			w.print(']');
+		} else {
+			w.print('\n');
+			tab(w);
+			w.print(']');
+		}
 	}
 
 	/*

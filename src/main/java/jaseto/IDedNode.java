@@ -15,7 +15,8 @@ public class IDedNode extends Node {
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
 		if (showID) {
-			w.print("\"#ID\": ");
+			tab(w);
+			w.print("\t\"#ID\": ");
 			w.print(id);
 		}
 	}

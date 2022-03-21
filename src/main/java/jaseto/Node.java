@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public abstract class Node {
+	public IDedNode parent;
+
 	public abstract void toJSON(PrintWriter w) throws IOException;
 
 	@Override
@@ -24,5 +26,19 @@ public abstract class Node {
 
 		var s = sw.toString();
 		return s;
+	}
+	
+	public int depth() {
+		if (parent ==null) {
+			return 0;
+		}
+
+		return parent.depth() + 1;
+	}
+	
+	protected void tab(PrintWriter w) {
+		for (int i = depth(); i > 0; --i) {
+			w.print('\t');
+		}
 	}
 }

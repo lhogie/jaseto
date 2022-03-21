@@ -15,11 +15,16 @@ public class IntrospectingMapNode extends MapNode {
 				if (newFieldName != null) {
 					Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(field.getType());
 					var childNode = Jaseto.toNode(field.get(o), fieldNodeClass, registry, sc);
-					children.put(field.getName(), childNode);
+					add(field.getName(), childNode);
 				}
 			}
 		}
 
 		sc.addKeys(children, o);
+	}
+
+	public void add(String name, Node childNode) {
+		children.put(name, childNode);
+		childNode.parent = this;
 	}
 }

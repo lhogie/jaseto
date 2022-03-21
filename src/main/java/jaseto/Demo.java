@@ -15,7 +15,7 @@ public class Demo {
 		double pi = Math.PI;
 		long maxLongValue = Long.MAX_VALUE;
 		Object aNullReference = null;
-		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8 };
+		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8, this };
 		char[] anArrayOfPrimitiveValues = "abcdef".toCharArray();
 		Object myself = this;
 	}
@@ -66,7 +66,6 @@ public class Demo {
 				}
 			});
 			
-			json  = Jaseto.beautify(json);
 			System.out.println(json);
 		} catch (StackOverflowError e) {
 			System.err.println(e);

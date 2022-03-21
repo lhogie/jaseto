@@ -1,13 +1,10 @@
 package jaseto;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-
-import toools.reflect.Introspector;
-import toools.reflect.Introspector.FF;
 
 public class ArrayNode extends IDedNode {
 	private Class componentType;
@@ -15,34 +12,38 @@ public class ArrayNode extends IDedNode {
 
 	public ArrayNode(Object o, Registry r, SerializationController sc) {
 		super(o, r);
-		
+
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
-		Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(componentType);
-		
+		Class<? extends Node> componentTypeNodeClass = Jaseto.lookupNodeClass(componentType);
+
+		boolean stringed = StringNode.class.isAssignableFrom(componentTypeNodeClass);
+
 		for (int i = 0; i < len; ++i) {
 			var e = Array.get(o, i);
-			
+
 			if (sc.serializeArrayElement(o, i, e)) {
-				children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
+				// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
+				var nc = stringed ? componentTypeNodeClass : Jaseto.lookupNodeClass(e.getClass());
+				children.add(Jaseto.toNode(e, nc, r, sc));
 			}
 		}
 	}
 
 	@Override
-	public void toJSON(Writer w) throws IOException {
+	public void toJSON(PrintWriter w) throws IOException {
 		super.toJSON(w);
-		w.write('[');
+		w.print('[');
 
 		for (int i = 0; i < children.size(); ++i) {
 			children.get(i).toJSON(w);
 
 			if (i < children.size() - 1) {
-				w.write(", ");
+				w.print(", ");
 			}
 		}
 
-		w.write(']');
+		w.print(']');
 	}
 
 	/*

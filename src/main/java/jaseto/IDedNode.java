@@ -1,7 +1,8 @@
 package jaseto;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class IDedNode extends Node {
 	private int id;
@@ -12,9 +13,12 @@ public class IDedNode extends Node {
 	}
 
 	@Override
-	public void toJSON(Writer w) throws IOException {
+	public void toJSON(PrintWriter w) throws IOException {
 		if (showID) {
-			w.write("id=" + id);
+			w.print("\"#ID\": ");
+			w.print('"');
+			w.print(id);
+			w.print('"');
 		}
 	}
 }

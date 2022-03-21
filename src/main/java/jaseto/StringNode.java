@@ -1,23 +1,28 @@
 package jaseto;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
+
+import toools.text.TextUtilities;
 
 public class StringNode extends Node {
 	private String value;
 
 	public StringNode(Object o, Registry registry, SerializationController sc) {
-		this.value = sc.toString(o);
+		this.value = o == null ? null : sc.toString(o);
 	}
 
 	@Override
-	public void toJSON(Writer w) throws IOException {
-		if (value.matches("[-A-Z-a-z0-9]+")) {
-			w.write(value);
+	public void toJSON(PrintWriter w) throws IOException {
+		if (value == null) {
+			w.print("null");
+		} else if (TextUtilities.isDouble(value) || TextUtilities.isInt(value) || value.equals("true")
+				|| value.equals("false")) {
+			w.print(value);
 		} else {
-			w.write('"');
-			w.write(value);
-			w.write('"');
+			w.print('"');
+			w.print(value);
+			w.print('"');
 		}
 	}
 }

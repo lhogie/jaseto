@@ -1,13 +1,13 @@
 package jaseto;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 
 import toools.text.json.JSONUtils;
 
 public abstract class Node {
-	public abstract void toJSON(Writer w) throws IOException;
+	public abstract void toJSON(PrintWriter w) throws IOException;
 
 	@Override
 	public String toString() {
@@ -15,7 +15,8 @@ public abstract class Node {
 	}
 
 	public String toJSON(boolean beautify) {
-		var w = new StringWriter();
+		var sw = new StringWriter();
+		var w = new PrintWriter(sw);
 
 		try {
 			toJSON(w);
@@ -23,7 +24,7 @@ public abstract class Node {
 			throw new IllegalStateException();
 		}
 
-		var s = w.toString();
+		var s = sw.toString();
 		return beautify ? JSONUtils.beautify(s) : s;
 	}
 }

@@ -1,25 +1,31 @@
 package jaseto;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 
 public class ObjectNode extends IDedNode {
-	private String clazz;
+	private String className;
+	private String classNameKey;
 
 	public ObjectNode(Object o, Registry registry, SerializationController sc) {
 		super(o, registry);
-		this.clazz = sc.getClassName(o.getClass());
+		this.className = o == null ? null : sc.getClassName(o.getClass());
+		this.classNameKey = sc.getClassNameKey();
 	}
 
 	@Override
-	public void toJSON(Writer w) throws IOException {
+	public void toJSON(PrintWriter w) throws IOException {
 		super.toJSON(w);
-		
-		if( clazz != null) {
-			w.write("\"#class\": ");
-			w.write('"');
-			w.write(clazz);
-			w.write('"');
+
+		if (className != null) {
+			w.print('"');
+			w.print(classNameKey);
+			w.print('"');
+			w.print(':');
+			w.print(' ');
+			w.print('"');
+			w.print(className);
+			w.print('"');
 		}
 	}
 }

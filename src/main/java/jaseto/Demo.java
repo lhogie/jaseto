@@ -7,37 +7,22 @@ import java.util.Set;
 import toools.reflect.Introspector.FF;
 
 public class Demo {
-	private static class TestType {
-		String name = "coucou";
-		boolean b = true;
-		byte bb = 0x7;
-		char c = 'c';
-		float f = 0.1f;
-		double d = Math.PI;
-		short s = 4;
-		int number = -1;
-		long l = Long.MAX_VALUE;
-		Object testNull = null;
-		Object cycle = this;
-		Object[] array = new Object[] { "Luc", true, this };
-		boolean[] arrayBoolean = new boolean[] { true, false };
-		String[] arrayString = new String[] { "Luc", "Elisa" };
-	}
 
 	private static class DemoType {
 		String foo = "bar";
 		boolean bool = true;
-		Boolean boolObject = true;
+		Boolean boolObject = false;
 		double pi = Math.PI;
-		long l = Long.MAX_VALUE;
+		long maxLongValue = Long.MAX_VALUE;
 		Object aNullReference = null;
-		Object aCyclicReference = this;
-		Object[] array = new Object[] { "Java", true, this };
+//		Object aCyclicReference = this;
+		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8 };
+		char[] anArrayOfPrimitiveValues = "abcdef".toCharArray();
 	}
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(Jaseto.toJSON(new TestType(), true, new SerializationController() {
+			System.out.println(Jaseto.toJSON(new DemoType(), true, new SerializationController() {
 
 				@Override
 				public String fieldName(FF field) {
@@ -66,8 +51,9 @@ public class Demo {
 					} else if (class1 == List.class) {
 						return "list";
 					}
-					
-					return class1.getName();				}
+
+					return class1.getName();
+				}
 
 				@Override
 				public String getClassNameKey() {

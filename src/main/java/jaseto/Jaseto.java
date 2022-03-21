@@ -4,15 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import jaseto.old.booleanDriver;
-import jaseto.old.byteDriver;
-import jaseto.old.charDriver;
-import jaseto.old.doubleDriver;
-import jaseto.old.floatDriver;
-import jaseto.old.intDriver;
-import jaseto.old.longDriver;
-import jaseto.old.shortDriver;
-
 public class Jaseto {
 	private static final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 
@@ -65,24 +56,28 @@ public class Jaseto {
 	}
 
 	public static String toJSON(Object o) {
-		return toJSON(o, false, new DefaultSerializationController());
+		return toJSON(o, new DefaultSerializationController());
+	}
+
+	public static String toJSON(Object o, SerializationController sc) {
+		return toJSON(o, true, sc);
 	}
 
 	public static String toJSON(Object o, boolean beautify, SerializationController sc) {
-		var node = (ObjectNode)  toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+		var node = (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
 		return node.toJSON(beautify);
 	}
 
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {
-		if (o == null)
+		if (o == null) {
 			return new NullNode();
-
-		// only stringeable nodes can't have IDs
+		}
+		
 		if (ObjectNode.class.isAssignableFrom(nodeClass)) {
 			var alreadyInNode = (ObjectNode) registry.getNode(o);
 
 			if (alreadyInNode == null) {
-				var n =  (ObjectNode) create(nodeClass, o, registry, sc);
+				var n = (ObjectNode) create(nodeClass, o, registry, sc);
 				registry.add(o, n);
 				return n;
 			} else {

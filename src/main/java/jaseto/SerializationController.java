@@ -16,4 +16,6 @@ public interface SerializationController {
 	String toString(Object o);
 
 	public String getClassNameKey();
+
+	Object substitute(Object o);
 }

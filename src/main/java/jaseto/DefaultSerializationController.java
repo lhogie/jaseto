@@ -35,4 +35,9 @@ public class DefaultSerializationController implements SerializationController {
 		return "#class";
 	}
 
+	@Override
+	public Object substitute(Object o) {
+		return o;
+	}
+
 }

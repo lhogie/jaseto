@@ -1,10 +1,12 @@
 package jaseto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 
 import toools.reflect.Introspector.FF;
 
@@ -54,10 +56,22 @@ public class Demo2 {
 				public String toString(Object o) {
 					return o.toString();
 				}
+
+				@Override
+				public Object substitute(Object o) {
+					System.err.println(o.getClass());
+					if (o instanceof JComponent) {
+						return List.of("This is Swing component - let's drop it");
+					} else if (o instanceof List) {
+						return new ArrayList<>((List) o);
+					} else {
+						return o;
+					}
+				}
 			});
-			
-//			json  = Jaseto.beautify(json);
+
 			System.out.println(json);
+			Jaseto.validateGSON(json);
 		} catch (StackOverflowError e) {
 			System.err.println(e);
 			e.printStackTrace();

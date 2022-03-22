@@ -64,6 +64,11 @@ public class Demo {
 				public String toString(Object o) {
 					return o.toString();
 				}
+
+				@Override
+				public Object substitute(Object o) {
+					return o;
+				}
 			});
 			
 			System.out.println(json);

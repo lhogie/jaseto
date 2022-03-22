@@ -87,6 +87,29 @@ To activate these changes, you can pass it as a parameter, like this:
 String json = Jaseto.toJSON(new TestType(), new DefaultSerializationController();
 ```
 
+### Substituting an object on-the-fly
+The most common problem when serializing data is the presence of weird objects whose the structure pose problems. To overcome this issue, Jaseto allows the dynamic substitution of any object be encountered.
+This example replace all Swing object with something riskless. Other objects remain untouched.
+```java
+@Override
+public Object substitute(Object o) {
+	return o instanceof JComponent ? "This is Swing component - let's drop it" : o;
+}
+```
+Note that substitution is single-pass.
+
+This can be used to other purpose. For example if you want to prevent non-serializable objects to be refused, you do something like this:
+```java
+@Override
+public Object substitute(Object o) {
+	if (!(o instanceof Serializable))
+		throw new NotSerializableException(o + " is no serializable");
+		
+	return o;
+}
+```
+
+
 ### Renaming a particular field
 This example convert all field names to upper case.
 ```java

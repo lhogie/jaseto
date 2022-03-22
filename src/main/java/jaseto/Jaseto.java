@@ -1,11 +1,15 @@
 package jaseto;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import jaseto.JSONParser.JSONException;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import jaseto.JasetoJSONParser.JSONException;
 import toools.text.json.JSONUtils;
 
 public class Jaseto {
@@ -68,11 +72,22 @@ public class Jaseto {
 		return node.toJSON();
 	}
 
-	public static void validate(String json) {
+	public static void validateJackson(String json) {
 		JSONUtils.beautify(json);
 	}
 
+	public static void validateGSON(String json) {
+		JsonParser.parseReader(new StringReader(json));
+	}
+
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {
+		Object newO =  sc.substitute(o);
+
+		if (newO != o) {
+			nodeClass = lookupNodeClass(newO.getClass());
+			o = newO;
+		}
+
 		if (o == null) {
 			return new NullNode();
 		}
@@ -93,6 +108,17 @@ public class Jaseto {
 		}
 	}
 
+	private static Object subst_multipass(Object o, SerializationController sc) {
+		while (true) {
+			var newO = sc.substitute(o);
+
+			if (newO == o || StringNode.class.isAssignableFrom(lookupNodeClass(newO.getClass())))
+				return o;
+
+			o = newO;
+		}
+	}
+
 	private static <A extends Node> A createNode(Class<A> nodeClass, Object from, Registry registry,
 			SerializationController sc) {
 		try {
@@ -106,7 +132,12 @@ public class Jaseto {
 	}
 
 	static Object toObject(String json) throws JSONException, IOException {
-		return new JSONParser(json).obj();
+		return new JasetoJSONParser(json).obj();
+	}
+
+	static void gson_parse(String json) {
+		JsonElement e = JsonParser.parseReader(new StringReader(json));
+		System.out.println(e.getClass());
 	}
 
 }

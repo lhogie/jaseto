@@ -37,7 +37,7 @@ String json = Jaseto.toJSON(new DemoType());
 ```
 produces the following JSON text:
 ```json
-{"#
+{
 	"#ID": 2111991224,
 	"#class": "jaseto.Demo$DemoType",
 	"aBooleanObject": {
@@ -102,10 +102,10 @@ This can be used to other purpose. For example if you want to prevent non-serial
 ```java
 @Override
 public Object substitute(Object o) {
-	if (!(o instanceof Serializable))
-		throw new NotSerializableException(o + " is no serializable");
-		
-	return o;
+	if (o instanceof Serializable)
+		return o;
+	
+	throw new NotSerializableException(o + " is no serializable");	
 }
 ```
 

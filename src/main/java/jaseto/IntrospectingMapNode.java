@@ -1,14 +1,14 @@
 package jaseto;
 
 import toools.reflect.Introspector;
-import toools.reflect.Introspector.JastoField;
+import toools.reflect.Introspector.JasetoField;
 
 public class IntrospectingMapNode extends MapNode {
 
 	public IntrospectingMapNode(Object o, Jaseto serializer) {
 		super(o, serializer);
 
-		for (JastoField field : Introspector.getIntrospector(o.getClass()).getFields()) {
+		for (JasetoField field : Introspector.getIntrospector(o.getClass()).getFields()) {
 			if (!field.isStatic() && !field.isTransient()) {
 				String newFieldName = serializer.customizer.fieldName(field);
 

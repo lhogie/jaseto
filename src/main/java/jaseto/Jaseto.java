@@ -15,7 +15,7 @@ import toools.text.json.JSONUtils;
 
 public class Jaseto {
 	private  final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
-	public SerializationController customizer = new DefaultSerializationController();
+	public Customizer customizer = new DefaultSerializationController();
 	Registry registry = new Registry();
 	
 	public Jaseto() {
@@ -96,7 +96,7 @@ public class Jaseto {
 		}
 	}
 
-	private  Object subst_multipass(Object o, SerializationController sc) {
+	private  Object subst_multipass(Object o, Customizer sc) {
 		while (true) {
 			var newO = sc.substitute(o);
 

@@ -2,10 +2,10 @@ package jaseto;
 
 import java.util.Map;
 
-import toools.reflect.Introspector.JastoField;
+import toools.reflect.Introspector.JasetoField;
 
-public interface SerializationController {
-	String fieldName(JastoField field);
+public interface Customizer {
+	String fieldName(JasetoField field);
 
 	void alterMap(Map<String, Node> keys, Object from);
 

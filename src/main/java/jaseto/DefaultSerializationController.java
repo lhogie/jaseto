@@ -2,12 +2,12 @@ package jaseto;
 
 import java.util.Map;
 
-import toools.reflect.Introspector.JastoField;
+import toools.reflect.Introspector.JasetoField;
 
-public class DefaultSerializationController implements SerializationController {
+public class DefaultSerializationController implements Customizer {
 
 	@Override
-	public String fieldName(JastoField field) {
+	public String fieldName(JasetoField field) {
 		return field.getName();
 	}
 

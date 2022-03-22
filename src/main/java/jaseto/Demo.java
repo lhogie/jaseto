@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import toools.reflect.Introspector.JastoField;
+import toools.reflect.Introspector.JasetoField;
 
 public class Demo {
 
@@ -25,10 +25,10 @@ public class Demo {
 	public static void main(String[] args) {
 		try {
 			var jaseto = new Jaseto();
-			jaseto.customizer = new SerializationController() {
+			jaseto.customizer = new Customizer() {
 
 				@Override
-				public String fieldName(JastoField field) {
+				public String fieldName(JasetoField field) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}

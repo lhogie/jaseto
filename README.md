@@ -33,7 +33,8 @@ class DemoType {
 
 This simple instruction:
 ```java
-String json = Jaseto.toJSON(new DemoType());
+Jaseto jaseto = new Jaseto();
+String json = jaseto.toJSON(new DemoType());
 ```
 produces the following JSON text:
 ```json
@@ -66,20 +67,18 @@ produces the following JSON text:
 The SerializationController interface enables deep customization of the output JSON text. A default implementation is provided.
 It provides a set of methods that can be implemented so as to match as much as possible the requirements of the client application.
 ```java
-public interface SerializationController {
-	String fieldName(FF field);
+public interface Customizer {
+	String fieldName(JasetoField field);
 
-	boolean serializeArrayElement(Object array, int i, Object element);
+	void alterMap(Map<String, Node> keys, Object from);
 
-	void addKeys(Map<String, Node> keys, Object from);
-
-	String getClassName(Class<? extends Object> class1);
+	String className(Class<? extends Object> c);
 
 	String toString(Object o);
 
 	public String getClassNameKey();
-	
-	public Object substitute(Object o);
+
+	Object substitute(Object o);
 }
 ```
 
@@ -117,7 +116,7 @@ public Object substitute(Object o) {
 This example convert all field names to upper case.
 ```java
 @Override
-public String fieldName(FF field) {
+public String fieldName(Field field) {
 	return field.getName().toUpperCase();
 }
 ```
@@ -127,7 +126,7 @@ public String fieldName(FF field) {
 When the new name is set to null, the field is dropped.
 ```java
 @Override
-public String fieldName(FF field) {
+public String fieldName(Field field) {
 	if (field.getName().equals("nastyField")) {
 		return null;
 	}
@@ -142,7 +141,7 @@ But sometimes the set of fields is not enough to completely describe an object. 
 This example describes if an object is visible by comparing its color to the color of its parent graphic environnement.
 ```java
 @Override
-public void addKeys(Map<String, Node> keys, Object from) {
+public void alterMap(Map<String, Node> keys, Object from) {
 	keys.put("visible", from.getColor() != from.getParent().getColor());
 }
 ```
@@ -151,7 +150,7 @@ public void addKeys(Map<String, Node> keys, Object from) {
 This prints pretty type names for usual Java types.
 ```java
 @Override
-public String classNameAlias(Class<? extends Object> class1) {
+public String className(Class<? extends Object> class1) {
 	if (class1 == String.class) {
 		return "string";
 	} else if (class1 == Set.class) {
@@ -168,7 +167,7 @@ public String classNameAlias(Class<? extends Object> class1) {
 When the class name is set to null, it is not shown.
 ```java
 @Override
-public String classNameAlias(Class<? extends Object> class1) {
+public String className(Class<? extends Object> class1) {
 	return null;
 }
 ```

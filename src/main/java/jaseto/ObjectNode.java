@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ObjectNode extends IDedNode {
-	private String className;
-	private String classNameKey;
+	 String className;
+	 String classNameKey;
 
 	public ObjectNode(Object o, Registry registry, SerializationController sc) {
 		super(o, registry);
@@ -17,7 +17,7 @@ public class ObjectNode extends IDedNode {
 	public void toJSON(PrintWriter w) throws IOException {
 		super.toJSON(w);
 
-		if (className != null) {
+		if (className != null && classNameKey != null) {
 			if (showID) {
 				w.print(",\n");
 			}

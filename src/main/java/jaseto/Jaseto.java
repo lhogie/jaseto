@@ -3,6 +3,7 @@ package jaseto;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public class Jaseto {
 		 * doubleDriver.class);
 		 */
 
+		registerNode(Collection.class, CollectionNode.class);
 		registerNode(String.class, StringNode.class);
 		registerNode(boolean.class, StringNode.class);
 		registerNode(byte.class, StringNode.class);
@@ -58,6 +60,8 @@ public class Jaseto {
 			return driver;
 		} else if (c.isArray()) {
 			return ArrayNode.class;
+		} else if (Collection.class.isAssignableFrom(c)) {
+			return CollectionNode.class;
 		} else {
 			return IntrospectingMapNode.class;
 		}
@@ -68,7 +72,7 @@ public class Jaseto {
 	}
 
 	public static String toJSON(Object o, SerializationController sc) {
-		var node = (ObjectNode) toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+		var node = toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
 		return node.toJSON();
 	}
 
@@ -80,6 +84,7 @@ public class Jaseto {
 		JsonParser.parseReader(new StringReader(json));
 	}
 
+	
 	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {
 		Object newO =  sc.substitute(o);
 

@@ -78,6 +78,8 @@ public interface SerializationController {
 	String toString(Object o);
 
 	public String getClassNameKey();
+	
+	public Object substitute(Object o);
 }
 ```
 
@@ -102,10 +104,11 @@ This can be used to other purpose. For example if you want to prevent non-serial
 ```java
 @Override
 public Object substitute(Object o) {
-	if (o instanceof Serializable)
+	if (o instanceof Serializable) {
 		return o;
+	}
 	
-	throw new NotSerializableException(o + " is no serializable");	
+	throw new NotSerializableException("class " + o.getClass() + " is not serializable");	
 }
 ```
 

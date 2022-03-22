@@ -59,9 +59,8 @@ public class Demo2 {
 
 				@Override
 				public Object substitute(Object o) {
-					System.err.println(o.getClass());
 					if (o instanceof JComponent) {
-						return List.of("This is Swing component - let's drop it");
+						return "This is Swing component - let's drop it";
 					} else if (o instanceof List) {
 						return new ArrayList<>((List) o);
 					} else {

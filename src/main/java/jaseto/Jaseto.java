@@ -1,9 +1,11 @@
 package jaseto;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import jaseto.JSONParser.JSONException;
 import toools.text.json.JSONUtils;
 
 public class Jaseto {
@@ -102,4 +104,9 @@ public class Jaseto {
 			throw new IllegalStateException(e);
 		}
 	}
+
+	static Object toObject(String json) throws JSONException, IOException {
+		return new JSONParser(json).obj();
+	}
+
 }

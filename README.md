@@ -6,9 +6,10 @@ Jackson and GSON, just like most serialization tools on the market enable the in
 
 Jaseto focuses on a specific (yet very frequent) application of serializers: exposing object models to Web applications written in Javascript, using JSON encoding. 
 This its particular purpose, Jaseto:
-- has deeper customization abilities
-- supports cyclic aggregation, making it able to serialize graphs
-- does not provide deserialization
+- features __programmatic customization__ API (many other tools annotation-based descriptive approaches)
+- has highly __flexible and deeper customization__ abilities
+- __supports cyclic aggregation__, making it able to __serialize graphs__
+- does not provide deserialization (__yet__)
 Also the API of Jaseto has been designed to be as simple as possible.
 
 Jaseto is being developed in the context of Research experiments at [I3S laboratory](https://www.i3s.unice.fr/) of [Universté Côte d'Azur](https://univ-cotedazur.eu/). In particular it powers the Web interface of the 
@@ -36,7 +37,7 @@ String json = Jaseto.toJSON(new DemoType());
 ```
 produces the following JSON text:
 ```json
-{
+{"#
 	"#ID": 2111991224,
 	"#class": "jaseto.Demo$DemoType",
 	"aBooleanObject": {

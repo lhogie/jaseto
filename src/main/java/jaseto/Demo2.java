@@ -1,23 +1,21 @@
 package jaseto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-
-import toools.reflect.Introspector.FF;
+import toools.reflect.Introspector.JastoField;
 
 public class Demo2 {
 
 	public static void main(String[] args) {
 		try {
-			var json = Jaseto.toJSON(new JButton(), new SerializationController() {
+			var jaseto = new Jaseto();
+			var json = jaseto.toJSON(List.of("salut", "luc"));
+			jaseto.customizer= new SerializationController() {
 
 				@Override
-				public String fieldName(FF field) {
+				public String fieldName(JastoField field) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}
@@ -26,16 +24,11 @@ public class Demo2 {
 				}
 
 				@Override
-				public boolean serializeArrayElement(Object array, int i, Object element) {
-					return true;
+				public void alterMap(Map<String, Node> keys, Object from) {
 				}
 
 				@Override
-				public void addKeys(Map<String, Node> keys, Object from) {
-				}
-
-				@Override
-				public String getClassName(Class<? extends Object> class1) {
+				public String className(Class<? extends Object> class1) {
 					if (class1 == String.class) {
 						return "string";
 					} else if (class1 == Set.class) {
@@ -59,15 +52,9 @@ public class Demo2 {
 
 				@Override
 				public Object substitute(Object o) {
-					if (o instanceof JComponent) {
-						return "This is Swing component - let's drop it";
-					} else if (o instanceof List) {
-						return new ArrayList<>((List) o);
-					} else {
-						return o;
-					}
+					return o;
 				}
-			});
+			};
 
 			System.out.println(json);
 			Jaseto.validateGSON(json);

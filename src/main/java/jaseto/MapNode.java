@@ -8,8 +8,13 @@ import java.util.TreeMap;
 public abstract class MapNode extends ObjectNode {
 	public final Map<String, Node> children = new TreeMap<>();
 
-	public MapNode(Object o, Registry registry, SerializationController sc) {
-		super(o, registry, sc);
+	public MapNode(Object o, Jaseto serializer) {
+		super(o, serializer);
+	}
+
+	public void add(String name, Node childNode) {
+		children.put(name, childNode);
+		childNode.parent = this;
 	}
 
 	@Override
@@ -38,6 +43,8 @@ public abstract class MapNode extends ObjectNode {
 
 				w.println();
 			}
+		} else {
+			w.println();
 		}
 
 		tab(w);

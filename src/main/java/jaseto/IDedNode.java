@@ -7,9 +7,9 @@ public class IDedNode extends Node {
 	int id;
 	boolean showID;
 
-	public IDedNode(Object o, Registry r) {
+	public IDedNode(Object o, Jaseto serializer) {
 		this.id = System.identityHashCode(o);
-		r.add(o, this);
+		serializer.registry.add(o, this);
 	}
 
 	@Override

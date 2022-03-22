@@ -1,30 +1,26 @@
 package jaseto;
 
 import toools.reflect.Introspector;
-import toools.reflect.Introspector.FF;
+import toools.reflect.Introspector.JastoField;
 
 public class IntrospectingMapNode extends MapNode {
 
-	public IntrospectingMapNode(Object o, Registry registry, SerializationController sc) {
-		super(o, registry, sc);
+	public IntrospectingMapNode(Object o, Jaseto serializer) {
+		super(o, serializer);
 
-		for (FF field : Introspector.getIntrospector(o.getClass()).getFields()) {
+		for (JastoField field : Introspector.getIntrospector(o.getClass()).getFields()) {
 			if (!field.isStatic() && !field.isTransient()) {
-				String newFieldName = sc.fieldName(field);
+				String newFieldName = serializer.customizer.fieldName(field);
 
 				if (newFieldName != null) {
-					Class<? extends Node> fieldNodeClass = Jaseto.lookupNodeClass(field.getType());
-					var childNode = Jaseto.toNode(field.get(o), fieldNodeClass, registry, sc);
+					Class<? extends Node> fieldNodeClass = serializer.lookupNodeClass(field.getType());
+					var childNode = serializer.toNode(field.get(o), fieldNodeClass);
 					add(field.getName(), childNode);
 				}
 			}
 		}
 
-		sc.addKeys(children, o);
+		serializer.customizer.alterMap(children, o);
 	}
 
-	public void add(String name, Node childNode) {
-		children.put(name, childNode);
-		childNode.parent = this;
-	}
 }

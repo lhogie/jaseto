@@ -7,10 +7,10 @@ public class ObjectNode extends IDedNode {
 	 String className;
 	 String classNameKey;
 
-	public ObjectNode(Object o, Registry registry, SerializationController sc) {
-		super(o, registry);
-		this.className = sc.getClassName(o.getClass());
-		this.classNameKey = sc.getClassNameKey();
+	public ObjectNode(Object o,  Jaseto serializer) {
+		super(o, serializer);
+		this.className = serializer.customizer.className(o.getClass());
+		this.classNameKey = serializer.customizer.getClassNameKey();
 	}
 
 	@Override

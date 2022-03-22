@@ -14,26 +14,12 @@ import jaseto.JasetoJSONParser.JSONException;
 import toools.text.json.JSONUtils;
 
 public class Jaseto {
-	private static final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
-
-	static {
-		/*
-		 * registerNode(int.class, intDriver.class); registerNode(boolean.class,
-		 * booleanDriver.class); registerNode(byte.class, byteDriver.class);
-		 * registerNode(char.class, charDriver.class); registerNode(short.class,
-		 * shortDriver.class); registerNode(long.class, longDriver.class);
-		 * registerNode(float.class, floatDriver.class); registerNode(double.class,
-		 * doubleDriver.class);
-		 * 
-		 * registerNode(Integer.class, intDriver.class); registerNode(Boolean.class,
-		 * booleanDriver.class); registerNode(Byte.class, byteDriver.class);
-		 * registerNode(Character.class, charDriver.class); registerNode(Short.class,
-		 * shortDriver.class); registerNode(Long.class, longDriver.class);
-		 * registerNode(Float.class, floatDriver.class); registerNode(Double.class,
-		 * doubleDriver.class);
-		 */
-
-		registerNode(Collection.class, CollectionNode.class);
+	private  final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
+	public SerializationController customizer = new DefaultSerializationController();
+	Registry registry = new Registry();
+	
+	public Jaseto() {
+	/*
 		registerNode(String.class, StringNode.class);
 		registerNode(boolean.class, StringNode.class);
 		registerNode(byte.class, StringNode.class);
@@ -43,23 +29,21 @@ public class Jaseto {
 		registerNode(long.class, StringNode.class);
 		registerNode(float.class, StringNode.class);
 		registerNode(double.class, StringNode.class);
+		*/
 
 	}
 
-	public static void registerNode(Class targetClass, Class<? extends Node> driver) {
-		classDrivers.put(targetClass, driver);
-	}
 
-	public static Class<? extends Node> lookupNodeClass(Class c) {
+	public  Class<? extends Node> lookupNodeClass(Class c) {
 		if (c == null)
 			return NullNode.class;
 
-		var driver = classDrivers.get(c);
+//		var driver = classDrivers.get(c);
 
-		if (driver != null) {
-			return driver;
+		if (c.isPrimitive() || c == String.class) {
+			return StringNode.class;
 		} else if (c.isArray()) {
-			return ArrayNode.class;
+			return ArrayNode2.class;
 		} else if (Collection.class.isAssignableFrom(c)) {
 			return CollectionNode.class;
 		} else {
@@ -67,12 +51,12 @@ public class Jaseto {
 		}
 	}
 
-	public static String toJSON(Object o) {
-		return toJSON(o, new DefaultSerializationController());
+	public  String toJSON(Object o) {
+		return toJSON(o, this);
 	}
 
-	public static String toJSON(Object o, SerializationController sc) {
-		var node = toNode(o, lookupNodeClass(o.getClass()), new Registry(), sc);
+	public  String toJSON(Object o, Jaseto serializer) {
+		var node = toNode(o, lookupNodeClass(o.getClass()));
 		return node.toJSON();
 	}
 
@@ -84,9 +68,8 @@ public class Jaseto {
 		JsonParser.parseReader(new StringReader(json));
 	}
 
-	
-	static Node toNode(Object o, Class<? extends Node> nodeClass, Registry registry, SerializationController sc) {
-		Object newO =  sc.substitute(o);
+	 Node toNode(Object o, Class<? extends Node> nodeClass) {
+		Object newO = customizer.substitute(o);
 
 		if (newO != o) {
 			nodeClass = lookupNodeClass(newO.getClass());
@@ -101,7 +84,7 @@ public class Jaseto {
 			var alreadyInNode = (ObjectNode) registry.getNode(o);
 
 			if (alreadyInNode == null) {
-				var n = (ObjectNode) createNode(nodeClass, o, registry, sc);
+				var n = (ObjectNode) createNode(nodeClass, o);
 				return n;
 			} else {
 				var link = new LinkNode(alreadyInNode.id);
@@ -109,11 +92,11 @@ public class Jaseto {
 				return link;
 			}
 		} else {
-			return createNode(nodeClass, o, registry, sc);
+			return createNode(nodeClass, o);
 		}
 	}
 
-	private static Object subst_multipass(Object o, SerializationController sc) {
+	private  Object subst_multipass(Object o, SerializationController sc) {
 		while (true) {
 			var newO = sc.substitute(o);
 
@@ -124,11 +107,10 @@ public class Jaseto {
 		}
 	}
 
-	private static <A extends Node> A createNode(Class<A> nodeClass, Object from, Registry registry,
-			SerializationController sc) {
+	private  <A extends Node> A createNode(Class<A> nodeClass, Object from) {
 		try {
-			var constructor = nodeClass.getConstructor(Object.class, Registry.class, SerializationController.class);
-			A n = constructor.newInstance(from, registry, sc);
+			var constructor = nodeClass.getConstructor(Object.class, Jaseto.class);
+			A n = constructor.newInstance(from, this);
 			return n;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

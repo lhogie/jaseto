@@ -8,8 +8,8 @@ import toools.text.TextUtilities;
 public class StringNode extends Node {
 	private String value;
 
-	public StringNode(Object o, Registry registry, SerializationController sc) {
-		this.value = o == null ? null : sc.toString(o);
+	public StringNode(Object o, Jaseto serializer) {
+		this.value = o == null ? null : serializer.customizer.toString(o);
 	}
 
 	@Override

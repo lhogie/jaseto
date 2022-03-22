@@ -2,16 +2,14 @@ package jaseto;
 
 import java.util.Map;
 
-import toools.reflect.Introspector.FF;
+import toools.reflect.Introspector.JastoField;
 
 public interface SerializationController {
-	String fieldName(FF field);
+	String fieldName(JastoField field);
 
-	boolean serializeArrayElement(Object array, int i, Object element);
+	void alterMap(Map<String, Node> keys, Object from);
 
-	void addKeys(Map<String, Node> keys, Object from);
-
-	String getClassName(Class<? extends Object> class1);
+	String className(Class<? extends Object> c);
 
 	String toString(Object o);
 

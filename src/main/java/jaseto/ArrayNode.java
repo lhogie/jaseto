@@ -11,23 +11,21 @@ public class ArrayNode extends IDedNode {
 	private List<Node> children = new ArrayList<>();
 	boolean stringed;
 
-	public ArrayNode(Object o, Registry r, SerializationController sc) {
-		super(o, r);
+	public ArrayNode(Object o, Jaseto sc) {
+		super(o, sc);
 
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
-		Class<? extends Node> componentTypeNodeClass = Jaseto.lookupNodeClass(componentType);
+		Class<? extends Node> componentTypeNodeClass = sc.lookupNodeClass(componentType);
 
 		stringed = StringNode.class.isAssignableFrom(componentTypeNodeClass);
 
 		for (int i = 0; i < len; ++i) {
 			var e = Array.get(o, i);
 
-			if (sc.serializeArrayElement(o, i, e)) {
-				// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
-				var nc = stringed ? componentTypeNodeClass : Jaseto.lookupNodeClass(e.getClass());
-				add(Jaseto.toNode(e, nc, r, sc));
-			}
+			// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
+			var nc = stringed ? componentTypeNodeClass : sc.lookupNodeClass(e.getClass());
+			add(sc.toNode(e, nc));
 		}
 	}
 

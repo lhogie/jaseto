@@ -17,4 +17,6 @@ public interface Customizer {
 
 	public String getClassNameKey();
 
+	boolean considerBoxedAsPrimitives();
+
 }

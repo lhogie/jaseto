@@ -12,20 +12,15 @@ import toools.reflect.Introspector.JasetoField;
 public class Demo {
 
 	private static class DemoType {
-		String aString = "bar";
 		boolean loveIsAll = true;
-		Boolean aBooleanObject = false;
 		double pi = Math.PI;
 		long maxLongValue = Long.MAX_VALUE;
+		Object myself = this;
+		Boolean aBooleanObject = false;
 		Object aNullReference = null;
 		Object[] anArray = new Object[] { "Java", true, 9.8, this };
 		Collection aList = new ArrayList<>(List.of("Hello", "you"));
-		Object myself = this;
-		Map aMap = new HashMap<>();
-
-		DemoType() {
-			aMap.put("1+1", "2");
-		}
+		Map aMap = Map.of("key1","value1", "key2", "value2");
 	}
 
 	public static void main(String[] args) {
@@ -33,6 +28,10 @@ public class Demo {
 			var jaseto = new Jaseto();
 			jaseto.customizer = new Customizer() {
 
+				@Override
+				public boolean considerBoxedAsPrimitives() {
+					return true;
+				}
 				@Override
 				public String fieldName(JasetoField field, Object from) {
 					if (field.getName().equals("nastyField")) {

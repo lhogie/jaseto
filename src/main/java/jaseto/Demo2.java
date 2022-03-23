@@ -12,7 +12,7 @@ public class Demo2 {
 		try {
 			var jaseto = new Jaseto();
 			var json = jaseto.toJSON(List.of("salut", "luc"));
-			jaseto.customizer= new Customizer() {
+			jaseto.customizer = new Customizer() {
 
 				@Override
 				public String fieldName(JasetoField field, Object from) {
@@ -28,12 +28,17 @@ public class Demo2 {
 				}
 
 				@Override
+				public boolean considerBoxedAsPrimitives() {
+					return true;
+				}
+
+				@Override
 				public String className(Object o) {
 					if (o instanceof String) {
 						return "string";
-					} else if (o instanceof  Set) {
+					} else if (o instanceof Set) {
 						return "set";
-					} else if (o instanceof  List) {
+					} else if (o instanceof List) {
 						return "list";
 					}
 

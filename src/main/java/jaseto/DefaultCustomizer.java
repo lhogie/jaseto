@@ -36,4 +36,10 @@ public class DefaultCustomizer implements Customizer {
 		return o;
 	}
 
+
+	@Override
+	public boolean considerBoxedAsPrimitives() {
+		return true;
+	}
+
 }

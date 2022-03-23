@@ -19,15 +19,15 @@ Jaseto is being developed in the context of Research experiments at [I3S laborat
 Serializing an object of following type:
 ```java
 class DemoType {
-		String aString = "bar";
 		boolean loveIsAll = true;
-		Boolean aBooleanObject = false;
 		double pi = Math.PI;
 		long maxLongValue = Long.MAX_VALUE;
-		Object aNullReference = null;
-		Object[] anArrayOfObjects = new Object[] { "Java", true, 9.8 };
-		char[] anArrayOfPrimitiveValues = "abcdef".toCharArray();
 		Object myself = this;
+		Boolean aBooleanObject = false;
+		Object aNullReference = null;
+		Object[] anArray = new Object[] { "Java", true, 9.8, this };
+		Collection aList = new ArrayList<>(List.of("Hello", "you"));
+		Map aMap = Map.of("key1","value1", "key2", "value2");
 	}
 ```
 
@@ -39,26 +39,30 @@ String json = jaseto.toJSON(new DemoType());
 produces the following JSON text:
 ```json
 {
-	"#ID": 2111991224,
+	"#ID": 1365202186,
 	"#class": "jaseto.Demo$DemoType",
-	"aBooleanObject": {
-		"#class": "java.lang.Boolean",
-		"value": false
+	"aBooleanObject": false,
+	"aList": {
+		"#class": "java.util.ArrayList",
+		"0": "Hello",
+		"1": "you"
+	},
+	"aMap": {
+		"#class": "java.util.ImmutableCollections$MapN",
+		"key1": "value1",
+		"key2": "value2"
 	},
 	"aNullReference": null,
-	"aString": "bar",
-	"anArrayOfObjects": ["Java", {
-			"#class": "java.lang.Boolean",
-			"value": true
-		}, {
-			"#class": "java.lang.Double",
-			"value": 9.8
-		}, {"#type": "link", "src": 2111991224}
-	],
-	"anArrayOfPrimitiveValues": ["a", "b", "c", "d", "e", "f"],
+	"anArray": {
+		"#class": "java.lang.Object[]",
+		"0": "Java",
+		"1": true,
+		"2": 9.8,
+		"3": {"#type": "link", "src": 1365202186}
+	},
 	"loveIsAll": true,
 	"maxLongValue": 9223372036854775807,
-	"myself": {"#type": "link", "src": 2111991224},
+	"myself": {"#type": "link", "src": 1365202186},
 	"pi": 3.141592653589793
 }
 ```
@@ -79,7 +83,6 @@ public interface Customizer {
 	String toString(Object o);
 
 	public String getClassNameKey();
-
 }
 ```
 
@@ -125,7 +128,7 @@ public Object substitute(Object o) {
 This example convert all field names to upper case.
 ```java
 @Override
-public String fieldName(Field field) {
+public String fieldName(Field field, Object from) {
 	return field.getName().toUpperCase();
 }
 ```
@@ -135,7 +138,7 @@ public String fieldName(Field field) {
 When the new name is set to null, the field is dropped.
 ```java
 @Override
-public String fieldName(Field field) {
+public String fieldName(Field field, Object from) {
 	if (field.getName().equals("nastyField")) {
 		return null;
 	}
@@ -159,16 +162,16 @@ public void alterMap(Map<String, Node> keys, Object from) {
 This prints pretty type names for usual Java types.
 ```java
 @Override
-public String className(Class<? extends Object> class1) {
-	if (class1 == String.class) {
+public String className(Object o) {
+	if (o instanceof String) {
 		return "string";
-	} else if (class1 == Set.class) {
+	} else if (o instanceof  Set) {
 		return "set";
-	} else if (class1 == List.class) {
+	} else if (o instanceof  List) {
 		return "list";
 	}
 
-	return class1.getName();
+	return o.getClass().getName();
 }
 ```
 
@@ -191,7 +194,7 @@ public Class<? extends Node> lookupNodeClass(Class c) {
 When the class name is set to null, it is not shown.
 ```java
 @Override
-public String className(Class<? extends Object> class1) {
+public String className(Object o) {
 	return null;
 }
 ```

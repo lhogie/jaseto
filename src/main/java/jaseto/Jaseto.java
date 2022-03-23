@@ -40,7 +40,7 @@ public class Jaseto {
 			return StringNode.class;
 		} else if (c == Boolean.class || c == Byte.class || c == Character.class || c == Short.class
 				|| c == Integer.class || c == Long.class || c == Float.class || c == Double.class) {
-			return BoxedType.class;
+			return customizer.considerBoxedAsPrimitives() ? StringNode.class : BoxedType.class;
 		} else if (Map.class.isAssignableFrom(c)) {
 			return MapNode.class;
 		} else if (c.isArray()) {

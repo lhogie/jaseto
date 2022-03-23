@@ -2,6 +2,7 @@ package jaseto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,11 @@ public class Demo {
 		Object[] anArray = new Object[] { "Java", true, 9.8, this };
 		Collection aList = new ArrayList<>(List.of("Hello", "you"));
 		Object myself = this;
+		Map aMap = new HashMap<>();
+
+		DemoType() {
+			aMap.put("1+1", "2");
+		}
 	}
 
 	public static void main(String[] args) {
@@ -28,7 +34,7 @@ public class Demo {
 			jaseto.customizer = new Customizer() {
 
 				@Override
-				public String fieldName(JasetoField field) {
+				public String fieldName(JasetoField field, Object from) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}
@@ -41,16 +47,16 @@ public class Demo {
 				}
 
 				@Override
-				public String className(Class<? extends Object> class1) {
-					if (class1 == String.class) {
+				public String className(Object o) {
+					if (o instanceof String) {
 						return "string";
-					} else if (class1 == Set.class) {
+					} else if (o instanceof  Set) {
 						return "set";
-					} else if (class1 == List.class) {
+					} else if (o instanceof  List) {
 						return "list";
 					}
 
-					return class1.getName();
+					return o.getClass().getName();
 				}
 
 				@Override
@@ -75,5 +81,7 @@ public class Demo {
 			System.err.println(e);
 			e.printStackTrace();
 		}
+
+		System.out.println(System.getProperty("java.home"));
 	}
 }

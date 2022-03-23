@@ -68,26 +68,35 @@ The SerializationController interface enables deep customization of the output J
 It provides a set of methods that can be implemented so as to match as much as possible the requirements of the client application.
 ```java
 public interface Customizer {
-	String fieldName(JasetoField field);
+	Object substitute(Object o);
+
+	String fieldName(JasetoField field, Object from);
 
 	void alterMap(Map<String, Node> keys, Object from);
 
-	String className(Class<? extends Object> c);
+	String className(Object o);
 
 	String toString(Object o);
 
 	public String getClassNameKey();
 
-	Object substitute(Object o);
 }
 ```
 
 To activate these changes, you can pass it as a parameter, like this:
 
 ```java
-String json = Jaseto.toJSON(new TestType(), new DefaultSerializationController();
+jaseto.customizer = new Customizer() {
+	// implement all methods
+};
 ```
 
+You can also use the default implementation and overrides only what you need
+```java
+jaseto.customizer = new DefaultCustomizer() {
+	// override only what you need
+};
+```
 ### Substituting an object on-the-fly
 The most common problem when serializing data is the presence of weird objects whose the structure pose problems. To overcome this issue, Jaseto allows the dynamic substitution of any object be encountered.
 This example replace all Swing object with something riskless. Other objects remain untouched.
@@ -162,6 +171,21 @@ public String className(Class<? extends Object> class1) {
 	return class1.getName();
 }
 ```
+
+
+### Using a new node class
+If you need a special processing for a particular object class, you can write a specific node class for it. Once written, you need to override:
+```java
+@Override
+public Class<? extends Node> lookupNodeClass(Class c) {
+	if (c == MySpecialClass){
+		return MySpecialClassNode.class
+	} else {
+		super.lookupNodeClass(c);
+	}
+}
+```
+
 
 ### Not showing the class name
 When the class name is set to null, it is not shown.

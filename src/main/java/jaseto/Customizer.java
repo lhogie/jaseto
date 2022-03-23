@@ -7,11 +7,11 @@ import toools.reflect.Introspector.JasetoField;
 public interface Customizer {
 	Object substitute(Object o);
 
-	String fieldName(JasetoField field);
+	String fieldName(JasetoField field, Object from);
 
 	void alterMap(Map<String, Node> keys, Object from);
 
-	String className(Class<? extends Object> c);
+	String className(Object o);
 
 	String toString(Object o);
 

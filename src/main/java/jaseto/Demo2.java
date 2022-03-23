@@ -15,7 +15,7 @@ public class Demo2 {
 			jaseto.customizer= new Customizer() {
 
 				@Override
-				public String fieldName(JasetoField field) {
+				public String fieldName(JasetoField field, Object from) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}
@@ -28,16 +28,16 @@ public class Demo2 {
 				}
 
 				@Override
-				public String className(Class<? extends Object> class1) {
-					if (class1 == String.class) {
+				public String className(Object o) {
+					if (o instanceof String) {
 						return "string";
-					} else if (class1 == Set.class) {
+					} else if (o instanceof  Set) {
 						return "set";
-					} else if (class1 == List.class) {
+					} else if (o instanceof  List) {
 						return "list";
 					}
 
-					return class1.getName();
+					return o.getClass().getName();
 				}
 
 				@Override

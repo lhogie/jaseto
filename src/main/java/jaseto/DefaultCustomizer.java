@@ -4,10 +4,10 @@ import java.util.Map;
 
 import toools.reflect.Introspector.JasetoField;
 
-public class DefaultSerializationController implements Customizer {
+public class DefaultCustomizer implements Customizer {
 
 	@Override
-	public String fieldName(JasetoField field) {
+	public String fieldName(JasetoField field, Object from) {
 		return field.getName();
 	}
 
@@ -17,8 +17,8 @@ public class DefaultSerializationController implements Customizer {
 	}
 
 	@Override
-	public String className(Class<? extends Object> c) {
-		return c.getName();
+	public String className(Object o) {
+		return o.getClass().getName();
 	}
 
 	@Override

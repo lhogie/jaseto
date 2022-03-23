@@ -9,7 +9,7 @@ public class ObjectNode extends IDedNode {
 
 	public ObjectNode(Object o,  Jaseto serializer) {
 		super(o, serializer);
-		this.className = serializer.customizer.className(o.getClass());
+		this.className = serializer.customizer.className(o);
 		this.classNameKey = serializer.customizer.getClassNameKey();
 	}
 

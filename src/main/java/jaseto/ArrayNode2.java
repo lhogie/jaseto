@@ -2,7 +2,7 @@ package jaseto;
 
 import java.lang.reflect.Array;
 
-public class ArrayNode2 extends MapNode {
+public class ArrayNode2 extends MapBasedNode {
 
 	public ArrayNode2(Object o, Jaseto serializer) {
 		super(o, serializer);

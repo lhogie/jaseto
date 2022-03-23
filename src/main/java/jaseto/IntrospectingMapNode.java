@@ -8,7 +8,7 @@ public class IntrospectingMapNode extends MapBasedNode {
 	public IntrospectingMapNode(Object o, Jaseto serializer) {
 		super(o, serializer);
 
-		for (JasetoField field : Introspector.getIntrospector(o.getClass()).getFields()) {
+		for (JasetoField field : Introspector.getIntrospector(o.getClass(), w -> System.err.println(w.getMessage())).getFields()) {
 			if (!field.isStatic() && !field.isTransient()) {
 				String newFieldName = serializer.customizer.fieldName(field, o);
 

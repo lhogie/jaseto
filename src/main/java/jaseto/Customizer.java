@@ -5,6 +5,8 @@ import java.util.Map;
 import toools.reflect.Introspector.JasetoField;
 
 public interface Customizer {
+	Object substitute(Object o);
+
 	String fieldName(JasetoField field);
 
 	void alterMap(Map<String, Node> keys, Object from);
@@ -15,5 +17,4 @@ public interface Customizer {
 
 	public String getClassNameKey();
 
-	Object substitute(Object o);
 }

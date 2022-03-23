@@ -158,7 +158,7 @@ public String className(Class<? extends Object> class1) {
 	} else if (class1 == List.class) {
 		return "list";
 	}
-	
+
 	return class1.getName();
 }
 ```

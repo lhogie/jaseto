@@ -20,7 +20,7 @@ public class IntrospectingMapNode extends MapNode {
 			}
 		}
 
-		serializer.customizer.alterMap(children, o);
+		serializer.customizer.alterMap(map, o);
 	}
 
 }

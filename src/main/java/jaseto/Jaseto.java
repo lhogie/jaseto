@@ -14,27 +14,23 @@ import jaseto.JasetoJSONParser.JSONException;
 import toools.text.json.JSONUtils;
 
 public class Jaseto {
-	private  final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
+	private final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 	public Customizer customizer = new DefaultSerializationController();
 	Registry registry = new Registry();
-	
+
 	public Jaseto() {
-	/*
-		registerNode(String.class, StringNode.class);
-		registerNode(boolean.class, StringNode.class);
-		registerNode(byte.class, StringNode.class);
-		registerNode(char.class, StringNode.class);
-		registerNode(short.class, StringNode.class);
-		registerNode(int.class, StringNode.class);
-		registerNode(long.class, StringNode.class);
-		registerNode(float.class, StringNode.class);
-		registerNode(double.class, StringNode.class);
-		*/
+		/*
+		 * registerNode(String.class, StringNode.class); registerNode(boolean.class,
+		 * StringNode.class); registerNode(byte.class, StringNode.class);
+		 * registerNode(char.class, StringNode.class); registerNode(short.class,
+		 * StringNode.class); registerNode(int.class, StringNode.class);
+		 * registerNode(long.class, StringNode.class); registerNode(float.class,
+		 * StringNode.class); registerNode(double.class, StringNode.class);
+		 */
 
 	}
 
-
-	public  Class<? extends Node> lookupNodeClass(Class c) {
+	public Class<? extends Node> lookupNodeClass(Class c) {
 		if (c == null)
 			return NullNode.class;
 
@@ -42,6 +38,9 @@ public class Jaseto {
 
 		if (c.isPrimitive() || c == String.class) {
 			return StringNode.class;
+		} else if (c == Boolean.class || c == Byte.class || c == Character.class || c == Short.class
+				|| c == Integer.class || c == Long.class || c == Float.class || c == Double.class) {
+			return BoxedType.class;
 		} else if (c.isArray()) {
 			return ArrayNode2.class;
 		} else if (Collection.class.isAssignableFrom(c)) {
@@ -51,11 +50,11 @@ public class Jaseto {
 		}
 	}
 
-	public  String toJSON(Object o) {
+	public String toJSON(Object o) {
 		return toJSON(o, this);
 	}
 
-	public  String toJSON(Object o, Jaseto serializer) {
+	public String toJSON(Object o, Jaseto serializer) {
 		var node = toNode(o, lookupNodeClass(o.getClass()));
 		return node.toJSON();
 	}
@@ -68,7 +67,7 @@ public class Jaseto {
 		JsonParser.parseReader(new StringReader(json));
 	}
 
-	 Node toNode(Object o, Class<? extends Node> nodeClass) {
+	Node toNode(Object o, Class<? extends Node> nodeClass) {
 		Object newO = customizer.substitute(o);
 
 		if (newO != o) {
@@ -96,7 +95,7 @@ public class Jaseto {
 		}
 	}
 
-	private  Object subst_multipass(Object o, Customizer sc) {
+	private Object subst_multipass(Object o, Customizer sc) {
 		while (true) {
 			var newO = sc.substitute(o);
 
@@ -107,7 +106,7 @@ public class Jaseto {
 		}
 	}
 
-	private  <A extends Node> A createNode(Class<A> nodeClass, Object from) {
+	private <A extends Node> A createNode(Class<A> nodeClass, Object from) {
 		try {
 			var constructor = nodeClass.getConstructor(Object.class, Jaseto.class);
 			A n = constructor.newInstance(from, this);

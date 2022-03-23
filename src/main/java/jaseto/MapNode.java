@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public abstract class MapNode extends ObjectNode {
-	public final Map<String, Node> children = new TreeMap<>();
+	public final Map<String, Node> map = new TreeMap<>();
 
 	public MapNode(Object o, Jaseto serializer) {
 		super(o, serializer);
 	}
 
 	public void add(String name, Node childNode) {
-		children.put(name, childNode);
+		map.put(name, childNode);
 		childNode.parent = this;
 	}
 
@@ -22,7 +22,7 @@ public abstract class MapNode extends ObjectNode {
 		w.print("{\n");
 		super.toJSON(w);
 
-		var i = children.entrySet().iterator();
+		var i = map.entrySet().iterator();
 
 		if (i.hasNext()) {
 			var somethingBefore = showID || (className != null && classNameKey != null);

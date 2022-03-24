@@ -33,7 +33,7 @@ public class Demo {
 					return true;
 				}
 				@Override
-				public String fieldName(JasetoField field, Object from) {
+				public String fieldName(JasetoField field, Object value, Object from) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}

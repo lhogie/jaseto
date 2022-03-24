@@ -7,7 +7,7 @@ import toools.reflect.Introspector.JasetoField;
 public class DefaultCustomizer implements Customizer {
 
 	@Override
-	public String fieldName(JasetoField field, Object from) {
+	public String fieldName(JasetoField field, Object value, Object from) {
 		return field.getName();
 	}
 

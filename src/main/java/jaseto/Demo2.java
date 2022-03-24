@@ -15,7 +15,7 @@ public class Demo2 {
 			jaseto.customizer = new Customizer() {
 
 				@Override
-				public String fieldName(JasetoField field, Object from) {
+				public String fieldName(JasetoField field, Object value, Object from) {
 					if (field.getName().equals("nastyField")) {
 						return null;
 					}

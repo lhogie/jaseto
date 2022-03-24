@@ -2,12 +2,13 @@ package jaseto;
 
 import java.lang.reflect.Array;
 
-public class ArrayNode2 extends MapBasedNode {
+public class ObjectizedArrayNode extends MapBasedNode {
 
-	public ArrayNode2(Object o, Jaseto serializer) {
+	public ObjectizedArrayNode(Object o, Jaseto serializer) {
 		super(o, serializer);
 
 		this.className = o.getClass().getComponentType().getName() + "[]";
+		map.put("size", new StringNode(Array.getLength(o), serializer) );
 		Class<? extends Node> componentTypeNodeClass = serializer.lookupNodeClass(o.getClass().getComponentType());
 		int len = Array.getLength(o);
 

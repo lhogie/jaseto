@@ -44,7 +44,7 @@ public class Jaseto {
 		} else if (Map.class.isAssignableFrom(c)) {
 			return MapNode.class;
 		} else if (c.isArray()) {
-			return ArrayNode2.class;
+			return ObjectizedArrayNode.class;
 		} else if (Collection.class.isAssignableFrom(c)) {
 			return CollectionNode.class;
 		} else {

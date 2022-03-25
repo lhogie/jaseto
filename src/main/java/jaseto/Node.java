@@ -27,15 +27,15 @@ public abstract class Node {
 		var s = sw.toString();
 		return s;
 	}
-	
+
 	public int depth() {
-		if (parent ==null) {
+		if (parent == null) {
 			return 0;
 		}
 
 		return parent.depth() + 1;
 	}
-	
+
 	protected void tab(PrintWriter w) {
 		for (int i = depth(); i > 0; --i) {
 			w.print('\t');

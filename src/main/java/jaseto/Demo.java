@@ -75,6 +75,7 @@ public class Demo {
 			};
 
 			var json = jaseto.toJSON(new DemoType());
+			Jaseto.gson_parse(json);
 			System.out.println(json);
 		} catch (StackOverflowError e) {
 			System.err.println(e);

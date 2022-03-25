@@ -7,13 +7,14 @@ import java.util.TreeMap;
 
 public abstract class ObjectNode extends Node {
 	public final Map<String, Node> map = new TreeMap<>();
-	int id;
 	boolean showID;
+	int id;
 
 	public ObjectNode(Object o, Jaseto serializer) {
 		this.id = System.identityHashCode(o);
 		serializer.registry.add(o, this);
 		map.put("#class", new StringNode(serializer.customizer.className(o), serializer));
+		map.put("#id", new StringNode(id, serializer));
 	}
 
 	public void addKey(String name, Node childNode) {
@@ -29,10 +30,8 @@ public abstract class ObjectNode extends Node {
 	public void toJSON(PrintWriter w) throws IOException {
 		w.print("{\n");
 
-		if (showID) {
-			tab(w);
-			w.print("\t\"#ID\": ");
-			w.print(id);
+		if (!showID) {
+			map.remove("#id");
 		}
 
 		var i = map.entrySet().iterator();

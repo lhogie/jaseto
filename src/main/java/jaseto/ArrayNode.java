@@ -34,14 +34,16 @@ public class ArrayNode extends Node {
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
-		w.print('[');
+		w.println('[');
 
 		for (int i = 0; i < children.size(); ++i) {
+			tab(w);
+			w.print('\t');
 			children.get(i).toJSON(w);
 
 			if (i < children.size() - 1) {
 				w.print(',');
-				w.print(' ');
+				w.print('\n');
 			}
 		}
 

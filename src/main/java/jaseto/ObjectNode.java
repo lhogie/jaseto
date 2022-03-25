@@ -13,8 +13,8 @@ public abstract class ObjectNode extends Node {
 	public ObjectNode(Object o, Jaseto serializer) {
 		this.id = System.identityHashCode(o);
 		serializer.registry.add(o, this);
-		map.put("#class", new StringNode(serializer.customizer.className(o), serializer));
-		map.put("#id", new StringNode(id, serializer));
+		addKey("#class", new StringNode(serializer.customizer.className(o), serializer));
+		addKey("#id", new StringNode(id, serializer));
 	}
 
 	public void addKey(String name, Node childNode) {

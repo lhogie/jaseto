@@ -11,7 +11,7 @@ public class MapNode extends ObjectNode {
 
 		for (Entry<Object, Object> e : map.entrySet()) {
 			var v = e.getValue();
-			this.map.put(e.getKey().toString(), sc.toNode(v, sc.lookupNodeClass(v.getClass())));
+			addKey(e.getKey().toString(), sc.toNode(v, sc.lookupNodeClass(v.getClass())));
 		}
 
 	}

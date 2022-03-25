@@ -1,6 +1,6 @@
 package jaseto;
 
-public class BoxedType extends MapBasedNode {
+public class BoxedType extends ObjectNode {
 
 	public BoxedType(Object o, Jaseto serializer) {
 		super(o, serializer);

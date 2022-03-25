@@ -11,13 +11,16 @@ public class DefaultCustomizer implements Customizer {
 		return field.getName();
 	}
 
-
 	@Override
 	public void alterMap(Map<String, Node> keys, Object from) {
 	}
 
 	@Override
 	public String className(Object o) {
+		if (o.getClass().isArray()) {
+			return o.getClass().getComponentType().getName() + "[]";
+		}
+
 		return o.getClass().getName();
 	}
 
@@ -35,7 +38,6 @@ public class DefaultCustomizer implements Customizer {
 	public Object substitute(Object o) {
 		return o;
 	}
-
 
 	@Override
 	public boolean considerBoxedAsPrimitives() {

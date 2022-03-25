@@ -6,6 +6,5 @@ public class CollectionNode extends ObjectizedArrayNode {
 
 	public CollectionNode(Object o, Jaseto sc) {
 		super(((Collection) o).toArray(), sc);
-		className = o.getClass().getName();
 	}
 }

@@ -26,7 +26,7 @@ public class Demo {
 	public static void main(String[] args) {
 		try {
 			var jaseto = new Jaseto();
-			jaseto.customizer = new Customizer() {
+			jaseto.customizer = new DefaultCustomizer() {
 
 				@Override
 				public boolean considerBoxedAsPrimitives() {
@@ -55,7 +55,7 @@ public class Demo {
 						return "list";
 					}
 
-					return o.getClass().getName();
+					return super.className(o);
 				}
 
 				@Override

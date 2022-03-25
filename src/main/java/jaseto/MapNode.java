@@ -3,7 +3,7 @@ package jaseto;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class MapNode extends MapBasedNode {
+public class MapNode extends ObjectNode {
 
 	public MapNode(Object o, Jaseto sc) {
 		super(o, sc);

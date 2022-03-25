@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public abstract class Node {
-	public IDedNode parent;
+	public Node parent;
 
 	public abstract void toJSON(PrintWriter w) throws IOException;
 

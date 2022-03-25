@@ -82,7 +82,7 @@ public class Jaseto {
 		}
 
 		if (ObjectNode.class.isAssignableFrom(nodeClass)) {
-			var alreadyInNode = (ObjectNode) registry.getNode(o);
+			var alreadyInNode = registry.getNode(o);
 
 			if (alreadyInNode == null) {
 				var n = (ObjectNode) createNode(nodeClass, o);

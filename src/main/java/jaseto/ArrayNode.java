@@ -6,14 +6,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayNode extends IDedNode {
+public class ArrayNode extends Node {
 	private Class componentType;
 	private List<Node> children = new ArrayList<>();
 	boolean stringed;
 
 	public ArrayNode(Object o, Jaseto sc) {
-		super(o, sc);
-
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
 		Class<? extends Node> componentTypeNodeClass = sc.lookupNodeClass(componentType);
@@ -36,7 +34,6 @@ public class ArrayNode extends IDedNode {
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
-		super.toJSON(w);
 		w.print('[');
 
 		for (int i = 0; i < children.size(); ++i) {

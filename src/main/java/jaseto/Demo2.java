@@ -1,8 +1,6 @@
 package jaseto;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import toools.reflect.Introspector.JasetoField;
 
@@ -15,49 +13,22 @@ public class Demo2 {
 			jaseto.customizer = new Customizer() {
 
 				@Override
-				public String fieldName(JasetoField field, Object value, Object from) {
-					if (field.getName().equals("nastyField")) {
-						return null;
-					}
+				public boolean treatBoxedAsPrimitives() {
+					return true;
+				}
 
-					return field.getName();
+					@Override
+				public Object substitute(Object o) {
+					return o;
 				}
 
 				@Override
-				public void alterMap(Map<String, Node> keys, Object from) {
-				}
-
-				@Override
-				public boolean considerBoxedAsPrimitives() {
+				public boolean accept(JasetoField field, Object value, Object from) {
 					return true;
 				}
 
 				@Override
-				public String className(Object o) {
-					if (o instanceof String) {
-						return "string";
-					} else if (o instanceof Set) {
-						return "set";
-					} else if (o instanceof List) {
-						return "list";
-					}
-
-					return o.getClass().getName();
-				}
-
-				@Override
-				public String getClassNameKey() {
-					return "#class";
-				}
-
-				@Override
-				public String toString(Object o) {
-					return o.toString();
-				}
-
-				@Override
-				public Object substitute(Object o) {
-					return o;
+				public void alter(ObjectNode n) {
 				}
 			};
 

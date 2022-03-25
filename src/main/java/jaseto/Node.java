@@ -4,8 +4,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public abstract class Node {
+public abstract class Node<E> {
 	public Node parent;
+	public E value;
+	public String name;
+
+	public Node(E value, String name) {
+		this.value = value;
+		this.name = name;
+	}
+
+	public String path() {
+		if (parent == null) {
+			return name;
+		} else if (parent.parent == null) {
+			return "." + name;
+		} else {
+			return parent.path() + "." + name;
+		}
+	}
 
 	public abstract void toJSON(PrintWriter w) throws IOException;
 

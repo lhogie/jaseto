@@ -1,47 +1,29 @@
 package jaseto;
 
-import java.util.Map;
-
 import toools.reflect.Introspector.JasetoField;
 
 public class DefaultCustomizer implements Customizer {
 
 	@Override
-	public String fieldName(JasetoField field, Object value, Object from) {
-		return field.getName();
-	}
-
-	@Override
-	public void alterMap(Map<String, Node> keys, Object from) {
-	}
-
-	@Override
-	public String className(Object o) {
-		if (o.getClass().isArray()) {
-			return o.getClass().getComponentType().getName() + "[]";
-		}
-
-		return o.getClass().getName();
-	}
-
-	@Override
-	public String toString(Object o) {
-		return o.toString();
-	}
-
-	@Override
-	public String getClassNameKey() {
-		return "#class";
+	public boolean accept(JasetoField field, Object value, Object from) {
+		// accepts all fields
+		return true;
 	}
 
 	@Override
 	public Object substitute(Object o) {
+		// no substitution
 		return o;
 	}
 
 	@Override
-	public boolean considerBoxedAsPrimitives() {
+	public boolean treatBoxedAsPrimitives() {
 		return true;
+	}
+
+	@Override
+	public void alter(ObjectNode n) {
+		// don't change anything		
 	}
 
 }

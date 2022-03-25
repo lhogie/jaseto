@@ -18,29 +18,14 @@ public class Jaseto {
 	public Customizer customizer = new DefaultCustomizer();
 	Registry registry = new Registry();
 
-	public Jaseto() {
-		/*
-		 * registerNode(String.class, StringNode.class); registerNode(boolean.class,
-		 * StringNode.class); registerNode(byte.class, StringNode.class);
-		 * registerNode(char.class, StringNode.class); registerNode(short.class,
-		 * StringNode.class); registerNode(int.class, StringNode.class);
-		 * registerNode(long.class, StringNode.class); registerNode(float.class,
-		 * StringNode.class); registerNode(double.class, StringNode.class);
-		 */
-
-	}
-
 	public Class<? extends Node> lookupNodeClass(Class c) {
-		if (c == null)
+		if (c == null) {
 			return NullNode.class;
-
-//		var driver = classDrivers.get(c);
-
-		if (c.isPrimitive() || c == String.class) {
+		} else if (c.isPrimitive() || c == String.class) {
 			return StringNode.class;
 		} else if (c == Boolean.class || c == Byte.class || c == Character.class || c == Short.class
 				|| c == Integer.class || c == Long.class || c == Float.class || c == Double.class) {
-			return customizer.considerBoxedAsPrimitives() ? StringNode.class : BoxedType.class;
+			return customizer.treatBoxedAsPrimitives() ? StringNode.class : BoxedType.class;
 		} else if (Map.class.isAssignableFrom(c)) {
 			return MapNode.class;
 		} else if (c.isArray()) {
@@ -57,7 +42,12 @@ public class Jaseto {
 	}
 
 	public String toJSON(Object o, Jaseto serializer) {
-		var node = toNode(o, lookupNodeClass(o.getClass()));
+		var node = toNode(o, ".", lookupNodeClass(o.getClass()));
+
+		for (var on : registry.map.values()) {
+			serializer.customizer.alter(on);
+		}
+
 		return node.toJSON();
 	}
 
@@ -69,7 +59,7 @@ public class Jaseto {
 		JsonParser.parseReader(new StringReader(json));
 	}
 
-	Node toNode(Object o, Class<? extends Node> nodeClass) {
+	Node toNode(Object o, String name, Class<? extends Node> nodeClass) {
 		Object newO = customizer.substitute(o);
 
 		if (newO != o) {
@@ -78,40 +68,29 @@ public class Jaseto {
 		}
 
 		if (o == null) {
-			return new NullNode();
+			return new NullNode(name);
 		}
 
 		if (ObjectNode.class.isAssignableFrom(nodeClass)) {
 			var alreadyInNode = registry.getNode(o);
 
 			if (alreadyInNode == null) {
-				var n = (ObjectNode) createNode(nodeClass, o);
+				var n = (ObjectNode) createNode(nodeClass, o, name);
 				return n;
 			} else {
-				var link = new LinkNode(alreadyInNode.id);
-				alreadyInNode.showID = true;
+				var link = new LinkNode(alreadyInNode, name);
 				return link;
 			}
 		} else {
-			return createNode(nodeClass, o);
+			var n = createNode(nodeClass, o, name);
+			return n;
 		}
 	}
 
-	private Object subst_multipass(Object o, Customizer sc) {
-		while (true) {
-			var newO = sc.substitute(o);
-
-			if (newO == o || StringNode.class.isAssignableFrom(lookupNodeClass(newO.getClass())))
-				return o;
-
-			o = newO;
-		}
-	}
-
-	private <A extends Node> A createNode(Class<A> nodeClass, Object from) {
+	private <A extends Node> A createNode(Class<A> nodeClass, Object from, String name) {
 		try {
-			var constructor = nodeClass.getConstructor(Object.class, Jaseto.class);
-			A n = constructor.newInstance(from, this);
+			var constructor = nodeClass.getConstructor(Object.class, String.class, Jaseto.class);
+			A n = constructor.newInstance(from, name, this);
 			return n;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
@@ -125,7 +104,6 @@ public class Jaseto {
 
 	static void gson_parse(String json) {
 		JsonElement e = JsonParser.parseReader(new StringReader(json));
-		System.out.println(e.getClass());
 	}
 
 }

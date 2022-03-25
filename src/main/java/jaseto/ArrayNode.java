@@ -11,7 +11,8 @@ public class ArrayNode extends Node {
 	private List<Node> children = new ArrayList<>();
 	boolean stringed;
 
-	public ArrayNode(Object o, Jaseto sc) {
+	public ArrayNode(Object o, String name, Jaseto sc) {
+		super(o, name);
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
 		Class<? extends Node> componentTypeNodeClass = sc.lookupNodeClass(componentType);
@@ -23,7 +24,7 @@ public class ArrayNode extends Node {
 
 			// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
 			var nc = stringed ? componentTypeNodeClass : sc.lookupNodeClass(e.getClass());
-			add(sc.toNode(e, nc));
+			add(sc.toNode(e, ""+i,nc));
 		}
 	}
 

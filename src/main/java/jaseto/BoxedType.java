@@ -2,9 +2,9 @@ package jaseto;
 
 public class BoxedType extends ObjectNode {
 
-	public BoxedType(Object o, Jaseto serializer) {
-		super(o, serializer);
-		var n = o == null ? new NullNode() : new StringNode(o.toString(), serializer);
-		map.put("value", n);
+	public BoxedType(Object o, String name, Jaseto serializer) {
+		super(o, name, serializer);
+		map.put("value", new StringNode(o.toString(), "value", serializer));
 	}
+
 }

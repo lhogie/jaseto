@@ -2,15 +2,22 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.function.Function;
 
 import toools.text.TextUtilities;
 
-public class StringNode extends Node {
-	private String value;
+public  class StringNode extends Node {
+	String value;
 
-	public StringNode(Object o, Jaseto serializer) {
-		this.value = o == null ? null : serializer.customizer.toString(o);
+	public StringNode(Object o, String name, Function<Object, String> f, Jaseto serializer) {
+		super(o, name);
+		this.value = o == null ? null : f.apply(o);
 	}
+
+	public StringNode(Object o, String name, Jaseto serializer) {
+		this(o, name, a -> a.toString(), serializer);
+	}
+
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {

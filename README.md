@@ -10,6 +10,8 @@ Also the API of Jaseto has been designed to be as simple as possible.
 Jaseto is being developed in the context of Research experiments at [I3S laboratory](https://www.i3s.unice.fr/) of [Universté Côte d'Azur](https://univ-cotedazur.eu/). In particular it powers the Web interface of the 
 [Idawi](https://github.com/lhogie/idawi) decentralized component system.
 
+Please feel free to drop me a message if you think of a particular feature would be nice to have.
+
 # Usage
 Serializing an object of following type:
 ```java

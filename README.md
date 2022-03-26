@@ -170,7 +170,7 @@ public void alter(ObjectNode n) {
 ```java
 @Override
 public void alter(ObjectNode n) {
-	if (n.value instanceof GraphicalObject){
+	if (n.value instanceof GraphicalObject) {
 		keys.renameKey("parentComponent", "parent");
 	}
 }
@@ -184,7 +184,7 @@ public void alter(ObjectNode n) {
 	if (n.value instanceof Set){
 		keys.putKey("#class", "set");
 	}
-	else if (n.value instanceof List){
+	else if (n.value instanceof List) {
 		keys.putKey("#class", "list");
 	}
 }
@@ -196,7 +196,7 @@ If you need a special processing for a particular object class, you can write a 
 ```java
 @Override
 public Class<? extends Node> lookupNodeClass(Class c) {
-	if (c == MySpecialClass){
+	if (c == MySpecialClass) {
 		return MySpecialClassNode.class
 	} else {
 		super.lookupNodeClass(c);

@@ -3,8 +3,8 @@
 Jaseto is JSON serializer for Java objects. It may be tempting to confront it to [Jackson serializer](https://www.baeldung.com/jackson-custom-serialization) and [GSON serializer](https://github.com/google/gson), but it actually tackles a different problem. Jackson and GSON, just like most serialization tools on the market enable the interoperation of heterogenous applications, by providing both serialization and deserialization. They are complex librairies which also suffer from limitations like the impossibility to work in the presence of cyclic aggregation, and a limited ability to customize the output JSON. Jaseto focuses on a specific (yet very frequent) application of serializers: exposing object models to Web applications written in Javascript, using JSON encoding. 
 This its particular purpose, Jaseto:
 - features __programmatic customization__ API (many other tools annotation-based descriptive approaches), which enables highly __flexible and deeper customization__ abilities
-- __supports cyclic aggregation__, making it possible to serialize __graphs__
-- does not provide deserialization (__yet__)
+- supports __cyclic aggregation__, making it possible to serialize __graphs__
+- does not provide deserialization (yet?)
 Also the API of Jaseto has been designed to be as simple as possible.
 
 Jaseto is being developed in the context of Research experiments at [I3S laboratory](https://www.i3s.unice.fr/) of [Universté Côte d'Azur](https://univ-cotedazur.eu/). In particular it powers the Web interface of the 

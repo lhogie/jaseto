@@ -8,7 +8,7 @@ Jaseto focuses on a specific (yet very frequent) application of serializers: exp
 This its particular purpose, Jaseto:
 - features __programmatic customization__ API (many other tools annotation-based descriptive approaches)
 - has highly __flexible and deeper customization__ abilities
-- __supports cyclic aggregation__, making it able to __serialize graphs__
+- __supports cyclic aggregation__, making it possible to serialize __graphs__
 - does not provide deserialization (__yet__)
 Also the API of Jaseto has been designed to be as simple as possible.
 
@@ -39,13 +39,15 @@ String json = jaseto.toJSON(new DemoType());
 produces the following JSON text:
 ```json
 {
-	"#ID": 1365202186,
 	"#class": "jaseto.Demo$DemoType",
 	"aBooleanObject": false,
 	"aList": {
 		"#class": "java.util.ArrayList",
-		"0": "Hello",
-		"1": "you"
+		"elements": [
+			"Hello",
+			"you",
+			{"#link_to": .anArray}
+		]
 	},
 	"aMap": {
 		"#class": "java.util.ImmutableCollections$MapN",
@@ -55,14 +57,15 @@ produces the following JSON text:
 	"aNullReference": null,
 	"anArray": {
 		"#class": "java.lang.Object[]",
-		"0": "Java",
-		"1": true,
-		"2": 9.8,
-		"3": {"#type": "link", "src": 1365202186}
+		"elements": [
+			"Java",
+			true,
+			9.8
+		]
 	},
 	"loveIsAll": true,
 	"maxLongValue": 9223372036854775807,
-	"myself": {"#type": "link", "src": 1365202186},
+	"myself": {"#link_to": .},
 	"pi": 3.141592653589793
 }
 ```
@@ -72,17 +75,28 @@ The SerializationController interface enables deep customization of the output J
 It provides a set of methods that can be implemented so as to match as much as possible the requirements of the client application.
 ```java
 public interface Customizer {
+	/*
+	 * Enable to substitute any object by another one.
+	 * This helps the serialization of problematic objects.
+	 */
 	Object substitute(Object o);
 
-	String fieldName(JasetoField field, Object from);
+	/*
+	 * Allow a specific to be excluded from the serialization process.
+	 * This helps the serialization of problematic fields. 
+	 */
+	boolean accept(JasetoField field, Object value, Object from);
 
-	void alterMap(Map<String, Node> keys, Object from);
+	/*
+	 * Do not show object counterparts of primitive types as objects.
+	 */
+	boolean treatBoxedAsPrimitives();
 
-	String className(Object o);
-
-	String toString(Object o);
-
-	public String getClassNameKey();
+	/*
+	 * Once an object is turned to a node, this method is called so as to
+	 * enable the user to adapt the node to its specific requirements.
+	 */
+	void alter(ObjectNode n);
 }
 ```
 
@@ -111,18 +125,6 @@ public Object substitute(Object o) {
 ```
 Note that substitution is single-pass.
 
-This can be used to other purpose. For example if you want to prevent non-serializable objects to be refused, you do something like this:
-```java
-@Override
-public Object substitute(Object o) {
-	if (o instanceof Serializable) {
-		return o;
-	}
-	
-	throw new NotSerializableException("class " + o.getClass() + " is not serializable");	
-}
-```
-
 
 ### Renaming a particular field
 This example convert all field names to upper case.
@@ -138,40 +140,56 @@ public String fieldName(Field field, Object from) {
 When the new name is set to null, the field is dropped.
 ```java
 @Override
-public String fieldName(Field field, Object from) {
-	if (field.getName().equals("nastyField")) {
-		return null;
-	}
-		
-	return field.getName();
+public boolean accept(JasetoField field, Object value, Object from) {
+	return !field.getName().equals("nastyField");
 }
 ```
 
-### Modifying keys
+### Changing the keys and values
+#### adding a new key
 Serialization only considers fields. Jackson also considers getter methods, assuming that they have no side effect. Jaseto does not take that risk.
 But sometimes the set of fields is not enough to completely describe an object. Jaseto enables the users to augment the default description of an object by adding new keys on the fly.
 This example describes if an object is visible by comparing its color to the color of its parent graphic environnement.
 ```java
 @Override
-public void alterMap(Map<String, Node> keys, Object from) {
-	keys.put("visible", from.getColor() != from.getParent().getColor());
+public void alter(ObjectNode n) {
+	if (n.value instanceof GraphicalObject){
+		keys.putKey("visible", from.getColor() != from.getParent().getColor());
+	}
 }
 ```
 
-### Renaming a class name
+#### Removing a key.
+This example removes all class information.
+```java
+@Override
+public void alter(ObjectNode n) {
+	keys.removeKey("#class");
+}
+```
+
+
+#### Renaming a field:
+```java
+@Override
+public void alter(ObjectNode n) {
+	if (n.value instanceof GraphicalObject){
+		keys.renameKey("parentComponent", "parent");
+	}
+}
+```
+
+#### Changing key value
 This prints pretty type names for usual Java types.
 ```java
 @Override
-public String className(Object o) {
-	if (o instanceof String) {
-		return "string";
-	} else if (o instanceof  Set) {
-		return "set";
-	} else if (o instanceof  List) {
-		return "list";
+public void alter(ObjectNode n) {
+	if (n.value instanceof Set){
+		keys.putKey("#class", "set");
 	}
-
-	return o.getClass().getName();
+	else if (n.value instanceof List){
+		keys.putKey("#class", "list");
+	}
 }
 ```
 
@@ -188,24 +206,4 @@ public Class<? extends Node> lookupNodeClass(Class c) {
 	}
 }
 ```
-
-
-### Not showing the class name
-When the class name is set to null, it is not shown.
-```java
-@Override
-public String className(Object o) {
-	return null;
-}
-```
-
-### Changing the key for the class name
-By default, the key exposing the class is #class. It can be changed everywhere by redefining
-```java
-@Override
-public String getClassNameKey() {
-	return "class name";
-}
-```
-If set to null, the class name won't be shown.
 

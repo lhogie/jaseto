@@ -33,12 +33,13 @@ public class Demo {
 
 				@Override
 				public void alter(ObjectNode n) {
-					n.renameKey("#class", "type");
+//					n.renameKey("#class", "###type");
 				}
 
 			
 				@Override
 				public Object substitute(Object o) {
+					//if (o != null&&o.getClass().isArray())return new ArrayList();
 					return o;
 				}
 

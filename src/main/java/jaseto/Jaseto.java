@@ -46,8 +46,8 @@ public class Jaseto {
 	public String toJSON(Object o, Jaseto serializer) {
 		var node = toNode(o, ".", lookupNodeClass(o.getClass()));
 
-		for (var on : registry.map.values()) {
-			serializer.customizer.alter(on);
+		for (var n : registry.map.values()) {
+			serializer.customizer.alter(n);
 		}
 
 		return node.toJSON();

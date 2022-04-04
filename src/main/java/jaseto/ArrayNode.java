@@ -24,7 +24,7 @@ public class ArrayNode extends Node {
 
 			// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
 			var nc = stringed ? componentTypeNodeClass : sc.lookupNodeClass(e.getClass());
-			add(sc.toNode(e, ""+i,nc));
+			add(sc.toNode(e, "" + i, nc));
 		}
 	}
 
@@ -37,24 +37,31 @@ public class ArrayNode extends Node {
 	public void toJSON(PrintWriter w) throws IOException {
 		w.println('[');
 
-		for (int i = 0; i < children.size(); ++i) {
-			tab(w);
-			w.print('\t');
-			children.get(i).toJSON(w);
+		int len = children.size();
 
-			if (i < children.size() - 1) {
-				w.print(',');
+		if (len == 0) {
+			w.print(']');
+		} else {
+			for (int i = 0; i < len; ++i) {
+				tab(w);
+				w.print('\t');
+				children.get(i).toJSON(w);
+
+				if (i < len - 1) {
+					w.print(',');
+					w.print('\n');
+				}
+			}
+
+			if (stringed) {
+				w.print(']');
+			} else {
 				w.print('\n');
+				tab(w);
+				w.print(']');
 			}
 		}
 
-		if (stringed) {
-			w.print(']');
-		} else {
-			w.print('\n');
-			tab(w);
-			w.print(']');
-		}
 	}
 
 	/*

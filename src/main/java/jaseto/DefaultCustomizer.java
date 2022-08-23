@@ -12,7 +12,7 @@ public class DefaultCustomizer implements Customizer {
 
 	@Override
 	public Object substitute(Object o) {
-		// no substitution
+		// no substitution: https://en.wikipedia.org/wiki/No_Substitutions:_Live_in_Osaka
 		return o;
 	}
 
@@ -23,7 +23,7 @@ public class DefaultCustomizer implements Customizer {
 
 	@Override
 	public void alter(ObjectNode n) {
-		// don't change anything		
+		// don't change anything
 	}
 
 }

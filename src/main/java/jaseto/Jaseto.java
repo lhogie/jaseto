@@ -16,7 +16,7 @@ import toools.text.json.JSONUtils;
 public class Jaseto {
 	private final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 	public Customizer customizer = new DefaultCustomizer();
-	Registry registry = new Registry();
+	public Registry registry = new Registry();
 
 	public Class<? extends Node> lookupNodeClass(Class c) {
 		if (c == null) {
@@ -53,11 +53,11 @@ public class Jaseto {
 		return node.toJSON();
 	}
 
-	public static void validateJackson(String json) {
+	public static void validateByJackson(String json) {
 		JSONUtils.beautify(json);
 	}
 
-	public static void validateGSON(String json) {
+	public static void validateByGSON(String json) {
 		JsonParser.parseReader(new StringReader(json));
 	}
 

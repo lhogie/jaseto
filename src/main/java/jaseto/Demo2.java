@@ -33,7 +33,7 @@ public class Demo2 {
 			};
 
 			System.out.println(json);
-			Jaseto.validateGSON(json);
+			Jaseto.validateByGSON(json);
 		} catch (StackOverflowError e) {
 			System.err.println(e);
 			e.printStackTrace();

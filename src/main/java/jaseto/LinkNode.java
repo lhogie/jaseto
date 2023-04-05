@@ -11,6 +11,6 @@ public class LinkNode extends Node<ObjectNode> {
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
-		w.print("{\"#link_to\": " + value.path() + "}");
+		w.print("{\"#link_to\": \"" + value.path() + "\"}");
 	}
 }

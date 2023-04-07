@@ -32,7 +32,8 @@ public class Demo {
 				}
 
 				@Override
-				public void alter(ObjectNode n) {
+				public Node alter(Node n) {
+					return n;
 //					n.renameKey("#class", "###type");
 				}
 

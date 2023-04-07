@@ -6,9 +6,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayNode extends Node {
+public class ArrayNode extends Node implements NotLeaf {
 	private Class componentType;
-	private List<Node> children = new ArrayList<>();
+	public List<Node> children = new ArrayList<>();
 	boolean stringed;
 
 	public ArrayNode(Object o, String name, Jaseto sc) {
@@ -62,6 +62,12 @@ public class ArrayNode extends Node {
 			}
 		}
 
+	}
+
+	@Override
+	public void replace(Node a, Node b) {
+		var i = children.indexOf(a);
+		children.set(i, b);
 	}
 
 	/*

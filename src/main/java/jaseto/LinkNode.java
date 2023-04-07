@@ -3,9 +3,9 @@ package jaseto;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class LinkNode extends Node<ObjectNode> {
+public class LinkNode extends Node<Node> {
 
-	public LinkNode(ObjectNode target, String name) {
+	public LinkNode(Node target, String name) {
 		super(target, name);
 	}
 

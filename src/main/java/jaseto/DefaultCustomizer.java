@@ -22,8 +22,8 @@ public class DefaultCustomizer implements Customizer {
 	}
 
 	@Override
-	public void alter(ObjectNode n) {
-		// don't change anything
+	public Node alter(Node n) {
+		return n;
 	}
 
 }

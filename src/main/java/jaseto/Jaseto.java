@@ -50,6 +50,19 @@ public class Jaseto {
 			serializer.customizer.alter(n);
 		}
 
+		for (var e : registry.map.entrySet()) {
+			Node a = e.getValue();
+			Node b = serializer.customizer.alter(a);
+
+			if (a != b) {
+				e.setValue(b);
+
+				if (a.parent instanceof NotLeaf) {
+					((NotLeaf) a.parent).replace(a, b);
+				}
+			}
+		}
+
 		return node.toJSON();
 	}
 

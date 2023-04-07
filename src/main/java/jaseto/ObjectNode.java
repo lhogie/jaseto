@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
-public abstract class ObjectNode extends Node {
+public abstract class ObjectNode extends Node implements NotLeaf {
 	public final Map<String, Node> map = new TreeMap<>();
 
 	public ObjectNode(Object o, String name, Jaseto serializer) {
@@ -14,6 +14,15 @@ public abstract class ObjectNode extends Node {
 		putKey("#class", new StringNode(className(o), "#class", serializer));
 	}
 
+	@Override
+	public void replace(Node a, Node b) {
+		for (var e : map.entrySet()) {
+			if (e.getValue() == a) {
+				e.setValue(b);
+				return;
+			}
+		}
+	}
 
 	public static String className(Object o) {
 		if (o.getClass().isArray()) {

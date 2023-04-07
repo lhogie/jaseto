@@ -17,7 +17,7 @@ public class Demo2 {
 					return true;
 				}
 
-					@Override
+				@Override
 				public Object substitute(Object o) {
 					return o;
 				}
@@ -28,7 +28,8 @@ public class Demo2 {
 				}
 
 				@Override
-				public void alter(ObjectNode n) {
+				public Node alter(Node n) {
+					return n;
 				}
 			};
 

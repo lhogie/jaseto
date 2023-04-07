@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Registry {
 
-	public final Map<Integer, ObjectNode> map = new HashMap<>();
+	public final Map<Integer, Node> map = new HashMap<>();
 
 	public Registry() {
 	}
@@ -15,7 +15,7 @@ public class Registry {
 		map.put(id(o), n);
 	}
 
-	public ObjectNode getNode(Object o) {
+	public Node getNode(Object o) {
 		return map.get(id(o));
 	}
 

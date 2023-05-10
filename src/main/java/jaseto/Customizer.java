@@ -1,6 +1,6 @@
 package jaseto;
 
-import toools.reflect.Introspector.JasetoField;
+import toools.reflect.Introspector.AField;
 
 public interface Customizer {
 	/*
@@ -13,11 +13,8 @@ public interface Customizer {
 	 * Allow a specific to be excluded from the serialization process. This helps
 	 * the serialization of problematic fields.
 	 */
-	boolean accept(JasetoField field, Object value, Object from);
+	boolean accept(AField field, Object value, Object from);
 
-	/*
-	 * Do not show object counterparts of primitive types as objects.
-	 */
 	boolean treatBoxedAsPrimitives();
 
 	/*
@@ -25,4 +22,6 @@ public interface Customizer {
 	 * user to adapt the node to its specific requirements.
 	 */
 	Node alter(Node n);
+
+	boolean enableLinksTo(Node n);
 }

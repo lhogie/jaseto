@@ -12,12 +12,14 @@ public class ArrayNode extends Node implements NotLeaf {
 	boolean stringed;
 
 	public ArrayNode(Object o, String name, Jaseto sc) {
-		super(o, name);
+		super(o, name, sc);
+		sc.registry.add(o, this);
+
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
 		Class<? extends Node> componentTypeNodeClass = sc.lookupNodeClass(componentType);
 
-		stringed = StringNode.class.isAssignableFrom(componentTypeNodeClass);
+		stringed = Litteral.class.isAssignableFrom(componentTypeNodeClass);
 
 		for (int i = 0; i < len; ++i) {
 			var e = Array.get(o, i);

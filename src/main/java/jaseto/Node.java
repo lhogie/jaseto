@@ -9,7 +9,7 @@ public abstract class Node<E> {
 	public E value;
 	public String name;
 
-	public Node(E value, String name) {
+	public Node(E value, String name, Jaseto serializer) {
 		this.value = value;
 		this.name = name;
 	}
@@ -41,16 +41,11 @@ public abstract class Node<E> {
 			throw new IllegalStateException();
 		}
 
-		var s = sw.toString();
-		return s;
+		return sw.toString();
 	}
 
 	public int depth() {
-		if (parent == null) {
-			return 0;
-		}
-
-		return parent.depth() + 1;
+		return parent == null ? 0 : parent.depth() + 1;
 	}
 
 	protected void tab(PrintWriter w) {

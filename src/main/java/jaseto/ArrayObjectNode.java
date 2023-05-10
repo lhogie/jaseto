@@ -8,8 +8,7 @@ public class ArrayObjectNode extends ObjectNode {
 		super(o, name, serializer);
 
 		if (Array.getLength(o) > 0) {
-			putKey("elements", new ArrayNode(o, name, serializer));
+			setProperty("elements", new ArrayNode(o, name, serializer));
 		}
 	}
-
 }

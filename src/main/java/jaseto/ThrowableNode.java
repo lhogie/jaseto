@@ -12,7 +12,7 @@ public class ThrowableNode extends ObjectNode {
 	public ThrowableNode(Object o, String name, Jaseto sc) {
 		super(o, name, sc);
 		var err = (Throwable) o;
-		putKey("message", new StringNode(err.getMessage(), "message", sc));
+		setProperty("message", new Litteral(err.getMessage(), "message", sc));
 		var st = new ArrayList<Entry>();
 
 		for (var el : err.getStackTrace()) {
@@ -22,6 +22,6 @@ public class ThrowableNode extends ObjectNode {
 			st.add(e);
 		}
 
-		putKey("stack_trace", sc.toNode(st, "stack_trace", sc.lookupNodeClass(st.getClass())));
+		setProperty("stack_trace", sc.toJSON(st));
 	}
 }

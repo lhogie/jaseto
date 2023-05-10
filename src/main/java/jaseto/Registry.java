@@ -1,17 +1,17 @@
 package jaseto;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Registry {
 
-	public final Map<Integer, Node> map = new HashMap<>();
+	private final Map<Integer, Node> map = new HashMap<>();
 
 	public Registry() {
 	}
 
-	public void add(Object o, ObjectNode n) {
-//		Cout.debug("adding " + o + " in " + n);
+	public void add(Object o, Node n) {
 		map.put(id(o), n);
 	}
 
@@ -21,5 +21,13 @@ public class Registry {
 
 	public int id(Object o) {
 		return System.identityHashCode(o);
+	}
+
+	public Collection<Node> nodes() {
+		return map.values();
+	}
+
+	public Collection<Integer> ids() {
+		return map.keySet();
 	}
 }

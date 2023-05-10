@@ -1,11 +1,14 @@
-package jaseto;
+package jaseto.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import toools.reflect.Introspector.JasetoField;
+import jaseto.DefaultCustomizer;
+import jaseto.Jaseto;
+import jaseto.Node;
+import toools.reflect.Introspector.AField;
 
 public class Demo {
 
@@ -15,16 +18,19 @@ public class Demo {
 		long maxLongValue = Long.MAX_VALUE;
 		Object myself = this;
 		Boolean aBooleanObject = false;
+		Boolean sameBooleanObject = aBooleanObject;
 		Object aNullReference = null;
 		Object[] anArray = new Object[] { "Java", true, 9.8 };
-		Collection aList = new ArrayList<>(List.of("Hello", "you", anArray));
+		Collection aList = new ArrayList<>(List.of("Hello", "you!", anArray));
+		Object sameList = aList;
 		Map aMap = Map.of("key1", "value1", "key2", "value2");
+		Class clazz = String.class;
 	}
 
 	public static void main(String[] args) {
 		try {
 			var jaseto = new Jaseto();
-			jaseto.customizer = new Customizer() {
+			jaseto.customizer = new DefaultCustomizer() {
 
 				@Override
 				public boolean treatBoxedAsPrimitives() {
@@ -45,12 +51,12 @@ public class Demo {
 				}
 
 				@Override
-				public boolean accept(JasetoField field, Object value, Object from) {
+				public boolean accept(AField field, Object value, Object from) {
 					return true;
 				}
 			};
 
-			var json = jaseto.toJSON(new DemoType());
+			var json = jaseto.toJSON(new DemoType()).toJSON();
 			Jaseto.gson_parse(json);
 			System.out.println(json);
 		} catch (StackOverflowError e) {

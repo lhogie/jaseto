@@ -6,17 +6,17 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public abstract class ObjectNode extends Node implements NotLeaf {
-	public final Map<String, Node> map = new TreeMap<>();
+	private final Map<String, Node> name_child = new TreeMap<>();
 
 	public ObjectNode(Object o, String name, Jaseto serializer) {
-		super(o, name);
+		super(o, name, serializer);
 		serializer.registry.add(o, this);
-		putKey("#class", new StringNode(className(o), "#class", serializer));
+		setProperty("#class", new ClassNode(o.getClass(), "#class", serializer));
 	}
 
 	@Override
 	public void replace(Node a, Node b) {
-		for (var e : map.entrySet()) {
+		for (var e : name_child.entrySet()) {
 			if (e.getValue() == a) {
 				e.setValue(b);
 				return;
@@ -27,40 +27,30 @@ public abstract class ObjectNode extends Node implements NotLeaf {
 	public static String className(Object o) {
 		if (o.getClass().isArray()) {
 			return o.getClass().getComponentType().getName() + "[]";
+		} else {
+			return o.getClass().getName();
 		}
-
-		return o.getClass().getName();
 	}
 
-	public void putKey(String name, Node childNode) {
-		map.put(name, childNode);
+	public void setProperty(String name, Node childNode) {
+		name_child.put(name, childNode);
 		childNode.parent = this;
 	}
 
-	public void putKey(String name, String value) {
-		var n = map.get(name);
-
-		if (n instanceof StringNode) {
-			var sn = (StringNode) n;
-			sn.value = value;
-		} else {
-			throw new IllegalStateException();
-		}
-	}
 
 	public void renameKey(String oldName, String newName) {
-		map.put(newName, map.remove(oldName));
+		name_child.put(newName, removeKey(oldName));
 	}
 
-	public void removeKey(String key) {
-		map.remove(key);
+	public Node removeKey(String key) {
+		return name_child.remove(key);
 	}
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
 		w.print("{\n");
 
-		var i = map.entrySet().iterator();
+		var i = name_child.entrySet().iterator();
 
 		if (i.hasNext()) {
 			while (i.hasNext()) {

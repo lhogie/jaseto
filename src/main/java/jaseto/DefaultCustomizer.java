@@ -1,18 +1,19 @@
 package jaseto;
 
-import toools.reflect.Introspector.JasetoField;
+import toools.reflect.Introspector.AField;
 
 public class DefaultCustomizer implements Customizer {
 
 	@Override
-	public boolean accept(JasetoField field, Object value, Object from) {
+	public boolean accept(AField field, Object value, Object from) {
 		// accepts all fields
 		return true;
 	}
 
 	@Override
 	public Object substitute(Object o) {
-		// no substitution: https://en.wikipedia.org/wiki/No_Substitutions:_Live_in_Osaka
+		// no substitution:
+		// https://en.wikipedia.org/wiki/No_Substitutions:_Live_in_Osaka
 		return o;
 	}
 
@@ -26,4 +27,8 @@ public class DefaultCustomizer implements Customizer {
 		return n;
 	}
 
+	@Override
+	public boolean enableLinksTo(Node n) {
+		return n.value.getClass() != String.class;
+	}
 }

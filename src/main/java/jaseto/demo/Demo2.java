@@ -1,16 +1,19 @@
-package jaseto;
+package jaseto.demo;
 
 import java.util.List;
 
-import toools.reflect.Introspector.JasetoField;
+import jaseto.DefaultCustomizer;
+import jaseto.Jaseto;
+import jaseto.Node;
+import toools.reflect.Introspector.AField;
 
 public class Demo2 {
 
 	public static void main(String[] args) {
 		try {
 			var jaseto = new Jaseto();
-			var json = jaseto.toJSON(List.of("salut", "luc"));
-			jaseto.customizer = new Customizer() {
+			var json = jaseto.toJSON(List.of("salut", "luc")).toJSON();
+			jaseto.customizer = new DefaultCustomizer() {
 
 				@Override
 				public boolean treatBoxedAsPrimitives() {
@@ -23,7 +26,7 @@ public class Demo2 {
 				}
 
 				@Override
-				public boolean accept(JasetoField field, Object value, Object from) {
+				public boolean accept(AField field, Object value, Object from) {
 					return true;
 				}
 

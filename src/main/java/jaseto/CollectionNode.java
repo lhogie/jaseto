@@ -2,11 +2,12 @@ package jaseto;
 
 import java.util.Collection;
 
-public class CollectionNode extends ArrayObjectNode {
+public class CollectionNode extends ObjectNode {
 
 	public CollectionNode(Object o, String name, Jaseto sc) {
-		super(((Collection) o).toArray(), name, sc);
-		putKey("#class", o.getClass().getName());
-		putKey("size", new StringNode(((Collection) o).size(), "size", sc));
+		super(o, name, sc);
+		setProperty("#class", sc.toJSON(o.getClass().getName()));
+		setProperty("size", sc.toJSON(((Collection) o).size()));
+		setProperty("elements", sc.toJSON(((Collection) o).toArray()));
 	}
 }

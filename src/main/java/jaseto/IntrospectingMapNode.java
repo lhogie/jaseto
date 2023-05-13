@@ -5,8 +5,8 @@ import toools.reflect.Introspector.AField;
 
 public class IntrospectingMapNode extends ObjectNode {
 
-	public IntrospectingMapNode(Object o, String name, Jaseto serializer) {
-		super(o, name, serializer);
+	public IntrospectingMapNode(Object o, Jaseto j) {
+		super(o, j);
 
 		var allFields = Introspector.getIntrospector(o.getClass(), w -> System.err.println(w.getMessage())).getFields();
 
@@ -14,11 +14,8 @@ public class IntrospectingMapNode extends ObjectNode {
 			if (!field.isStatic() && !field.isTransient()) {
 				var value = field.get(o);
 
-				if (serializer.customizer.accept(field, value, o)) {
-					var t = field.getType().isPrimitive() || value == null ? field.getType() : value.getClass();
-					Class<? extends Node> fieldNodeClass = serializer.lookupNodeClass(t);
-					var childNode = serializer.toNode(value, field.getName(), fieldNodeClass);
-					setProperty(field.getName(), childNode);
+				if (j.accept(o, field, value)) {
+					setProperty(field.getName(), j.toNode(value));
 				}
 			}
 		}

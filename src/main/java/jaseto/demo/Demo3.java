@@ -5,7 +5,7 @@ import java.util.List;
 import jaseto.Jaseto;
 import jaseto.Node;
 
-public class Demo2 {
+public class Demo3 {
 
 	public static void main(String[] args) {
 		try {

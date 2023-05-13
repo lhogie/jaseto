@@ -4,11 +4,14 @@ import java.lang.reflect.Array;
 
 public class ArrayObjectNode extends ObjectNode {
 
-	public ArrayObjectNode(Object o, String name, Jaseto serializer) {
-		super(o, name, serializer);
+	public ArrayObjectNode(Object o, Jaseto serializer) {
+		super(o, serializer);
+		var len = Array.getLength(o);
 
-		if (Array.getLength(o) > 0) {
-			setProperty("elements", new ArrayNode(o, name, serializer));
+		setProperty("size", new Litteral(len, serializer));
+
+		if (len > 0) {
+			setProperty("elements", new ArrayNode(o, serializer));
 		}
 	}
 }

@@ -9,8 +9,8 @@ public class ThrowableNode extends ObjectNode {
 		int lineNumber;
 	}
 	
-	public ThrowableNode(Object o, String name, Jaseto sc) {
-		super(o, name, sc);
+	public ThrowableNode(Object o, Jaseto sc) {
+		super(o, sc);
 		var err = (Throwable) o;
 		setProperty("message", new Litteral(err.getMessage(), "message", sc));
 		var st = new ArrayList<Entry>();
@@ -22,6 +22,6 @@ public class ThrowableNode extends ObjectNode {
 			st.add(e);
 		}
 
-		setProperty("stack_trace", sc.toJSON(st));
+		setProperty("stack_trace", sc.toNode(st));
 	}
 }

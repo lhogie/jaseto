@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 
 public class LinkNode extends Node<Node> {
 
-	public LinkNode(Node target, String name, Jaseto sc) {
-		super(target, name, sc);
+	public LinkNode(Node target,  Jaseto sc) {
+		super(target, sc);
 	}
 
 	@Override

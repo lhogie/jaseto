@@ -4,35 +4,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class ArrayNode extends Node implements NotLeaf {
+public class ArrayNode extends NodeContainer  {
 	private Class componentType;
 	public List<Node> children = new ArrayList<>();
 	boolean stringed;
 
-	public ArrayNode(Object o, String name, Jaseto sc) {
-		super(o, name, sc);
+	public ArrayNode(Object o, Jaseto sc) {
+		super(o, sc);
 		sc.registry.add(o, this);
-
 		int len = Array.getLength(o);
 		this.componentType = o.getClass().getComponentType();
-		Class<? extends Node> componentTypeNodeClass = sc.lookupNodeClass(componentType);
-
-		stringed = Litteral.class.isAssignableFrom(componentTypeNodeClass);
 
 		for (int i = 0; i < len; ++i) {
-			var e = Array.get(o, i);
-
-			// children.add(Jaseto.toNode(e, fieldNodeClass, r, sc));
-			var nc = stringed ? componentTypeNodeClass : sc.lookupNodeClass(e.getClass());
-			add(sc.toNode(e, "" + i, nc));
+			var value = Array.get(o, i);
+			var node = sc.toNode(value);
+			children.add(node);
+			node.parent = this;
 		}
-	}
-
-	private void add(Node node) {
-		children.add(node);
-		node.parent = this;
 	}
 
 	@Override
@@ -55,15 +46,13 @@ public class ArrayNode extends Node implements NotLeaf {
 				}
 			}
 
-			if (stringed) {
-				w.print(']');
-			} else {
+			if (!stringed) {
 				w.print('\n');
 				tab(w);
-				w.print(']');
 			}
-		}
 
+			w.print(']');
+		}
 	}
 
 	@Override
@@ -101,5 +90,15 @@ public class ArrayNode extends Node implements NotLeaf {
 	 * 
 	 * return n; }
 	 */
+
+	public String childName(Node node) {
+		for (int i = 0; i < children.size(); ++i) {
+			if (children.get(i) == node) {
+				return "" + i;
+			}
+		}
+
+		return null;
+	}
 
 }

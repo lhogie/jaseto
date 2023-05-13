@@ -8,9 +8,6 @@ public class Registry {
 
 	private final Map<Integer, Node> map = new HashMap<>();
 
-	public Registry() {
-	}
-
 	public void add(Object o, Node n) {
 		map.put(id(o), n);
 	}
@@ -29,5 +26,10 @@ public class Registry {
 
 	public Collection<Integer> ids() {
 		return map.keySet();
+	}
+
+	public void clear() {
+		map.clear();
+
 	}
 }

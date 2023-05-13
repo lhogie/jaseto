@@ -5,23 +5,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public abstract class Node<E> {
-	public Node parent;
+	public NodeContainer parent;
 	public E value;
-	public String name;
 
-	public Node(E value, String name, Jaseto serializer) {
+	public Node(E value, Jaseto serializer) {
 		this.value = value;
-		this.name = name;
-	}
-
-	public String path() {
-		if (parent == null) {
-			return name;
-		} else if (parent.parent == null) {
-			return "." + name;
-		} else {
-			return parent.path() + "." + name;
-		}
 	}
 
 	public abstract void toJSON(PrintWriter w) throws IOException;
@@ -51,6 +39,20 @@ public abstract class Node<E> {
 	protected void tab(PrintWriter w) {
 		for (int i = depth(); i > 0; --i) {
 			w.print('\t');
+		}
+	}
+
+	protected String path() {
+		if (parent == null) {
+			return ".";
+		} else {
+			var s = "." + parent.childName(this);
+
+			if (parent.parent != null) {
+				s = parent.path() + s;
+			}
+
+			return s;
 		}
 	}
 }

@@ -1,10 +1,8 @@
 package jaseto;
 
-import toools.text.TextUtilities;
-
 public class ClassNode extends Litteral {
 
-	public ClassNode(Object o, String name, Jaseto jaseto) {
-		super(o, name, TextUtilities.getNiceClassName((Class) o), jaseto);
+	public ClassNode(Object o, Jaseto jaseto) {
+		super(o, jaseto.classname((Class) o), jaseto);
 	}
 }

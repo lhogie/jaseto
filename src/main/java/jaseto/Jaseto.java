@@ -1,62 +1,90 @@
 package jaseto;
 
+import java.beans.Customizer;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import jaseto.JasetoJSONParser.JSONException;
+import toools.reflect.Introspector.AField;
+import toools.text.TextUtilities;
 import toools.text.json.JSONUtils;
 
 public class Jaseto {
 	private final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
-	public Customizer customizer = new DefaultCustomizer();
 	public Registry registry = new Registry();
 
-	protected Class<? extends Node> lookupNodeClass(Class c) {
-				
-		if (c == null) {
-			return NullNode.class;
-		} else if (c.isPrimitive() || c == String.class) {
-			return Litteral.class;
-		} else if (JustAValueType.knownTypes.contains(c)) {
-			return customizer.treatBoxedAsPrimitives() ? Litteral.class : JustAValueType.class;
-		} else if (Class.class.isAssignableFrom(c)) {
-			return ClassNode.class;
-		} else if (Throwable.class.isAssignableFrom(c)) {
-			return ThrowableNode.class;
-		} else if (Map.class.isAssignableFrom(c)) {
-			return String2ObjectMapNode.class;
-		} else if (c.isArray()) {
-			return ArrayNode.class;
-		} else if (Collection.class.isAssignableFrom(c)) {
-			return CollectionNode.class;
+
+
+	protected boolean enableLinksTo(Node n) {
+		return n.value.getClass() != String.class;
+	}
+
+	public String classname(Class<?> o) {
+		if (List.class.isAssignableFrom(o)) {
+			return "list";
+		} else if (Map.class.isAssignableFrom(o)) {
+			return "map";
 		} else {
-			return IntrospectingMapNode.class;
+			return TextUtilities.getNiceClassName((Class) o);
 		}
 	}
 
-	public Node toJSON(Object o) {
-		var node = toNode(o, ".", lookupNodeClass(o.getClass()));
+	/*
+	 * Allow a specific to be excluded from the serialization process. This helps
+	 * the serialization of problematic fields.
+	 */
+	public boolean accept(Object from, AField field, Object value) {
+		return true;
+	}
 
-		for (var n : registry.nodes()) {
-			customizer.alter(n);
+	/*
+	 * Once an object is turned to a node, this method is called so as to enable the
+	 * user to adapt the node to its specific requirements.
+	 */
+	protected Node alter(Node n) {
+		if (n instanceof CollectionNode) {
+			return ((CollectionNode) n).get("elements");
+		} else {
+			return n;
 		}
-		/*
-		 * for (var e : registry.map.entrySet()) { Node a = e.getValue(); Node b =
-		 * customizer.alter(a);
-		 * 
-		 * if (a != b) { e.setValue(b);
-		 * 
-		 * if (a.parent instanceof NotLeaf) { ((NotLeaf) a.parent).replace(a, b); } } }
-		 */
+	}
 
-		return node;
+	public final Node toNode(Object o) {
+		var alreadyInNode = registry.getNode(o);
+
+		if (alreadyInNode != null && enableLinksTo(alreadyInNode)) {
+			return new LinkNode(alreadyInNode, this);
+		} else {
+			Node n = createNode(o);
+			return n;
+		}
+	}
+
+	public Node createNode(Object o) {
+		if (o == null) {
+			return new NullNode(this);
+		} else if (Litteral.toStringable.contains(o.getClass())) {
+			return new Litteral(o, this);
+		} else if (o instanceof Class) {
+			return new ClassNode(o, this);
+		} else if (o instanceof Throwable) {
+			return new ThrowableNode(o, this);
+		} else if (o instanceof Map) {
+			return new String2ObjectMapNode(o, this);
+		} else if (o.getClass().isArray()) {
+			return new ArrayNode(o, this);
+		} else if (o instanceof Collection) {
+			return new CollectionNode(o, this);
+		} else {
+			return new IntrospectingMapNode(o, this);
+		}
 	}
 
 	public static void validateByJackson(String json) {
@@ -65,36 +93,6 @@ public class Jaseto {
 
 	public static void validateByGSON(String json) {
 		JsonParser.parseReader(new StringReader(json));
-	}
-
-	Node toNode(Object o, String name, Class<? extends Node> nodeClass) {
-		Object newO = customizer.substitute(o);
-
-		if (newO != o) {
-			nodeClass = lookupNodeClass(newO.getClass());
-			o = newO;
-		}
-
-		if (o == null) {
-			return new NullNode(name, this);
-		} else {
-			var alreadyInNode = registry.getNode(o);
-
-			if (alreadyInNode != null && customizer.enableLinksTo(alreadyInNode)) {
-				return new LinkNode(alreadyInNode, name, this);
-			} else {
-				return createNode(nodeClass, o, name);
-			}
-		}
-	}
-
-	private <A extends Node> A createNode(Class<A> nodeClass, Object from, String name) {
-		try {
-			return nodeClass.getConstructor(Object.class, String.class, Jaseto.class).newInstance(from, name, this);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 	static Object toObject(String json) throws JSONException, IOException {

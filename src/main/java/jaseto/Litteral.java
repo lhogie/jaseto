@@ -2,19 +2,23 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 import toools.text.TextUtilities;
 
 public class Litteral extends Node {
 	String value;
 
-	public Litteral(Object o, String name, String value, Jaseto serializer) {
-		super(o, name, serializer);
+	 static Set<Class> toStringable = Set.of(Boolean.class, Byte.class, Character.class, Short.class,
+				Integer.class, Long.class, Float.class, Double.class, String.class, StringBuffer.class);
+
+	public Litteral(Object o, String value, Jaseto serializer) {
+		super(o, serializer);
 		this.value = o == null ? null : value;
 	}
 
-	public Litteral(Object o, String name, Jaseto serializer) {
-		this(o, name, o.toString(), serializer);
+	public Litteral(Object o, Jaseto serializer) {
+		this(o, o.toString(), serializer);
 	}
 
 	@Override

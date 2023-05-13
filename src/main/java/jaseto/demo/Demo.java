@@ -5,10 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jaseto.DefaultCustomizer;
 import jaseto.Jaseto;
+import jaseto.Litteral;
 import jaseto.Node;
-import toools.reflect.Introspector.AField;
 
 public class Demo {
 
@@ -29,34 +28,25 @@ public class Demo {
 
 	public static void main(String[] args) {
 		try {
-			var jaseto = new Jaseto();
-			jaseto.customizer = new DefaultCustomizer() {
-
-				@Override
-				public boolean treatBoxedAsPrimitives() {
-					return true;
-				}
+			var jaseto = new Jaseto() {
 
 				@Override
 				public Node alter(Node n) {
 					return n;
 //					n.renameKey("#class", "###type");
 				}
-
-			
+				
 				@Override
-				public Object substitute(Object o) {
-					//if (o != null&&o.getClass().isArray())return new ArrayList();
-					return o;
-				}
-
-				@Override
-				public boolean accept(AField field, Object value, Object from) {
-					return true;
+				public Node createNode(Object o) {
+					if (o instanceof List) {
+						return toNode(((List)o).toArray());
+					}
+					
+					return super.createNode(o);
 				}
 			};
 
-			var json = jaseto.toJSON(new DemoType()).toJSON();
+			var json = jaseto.toNode(new DemoType()).toJSON();
 			Jaseto.gson_parse(json);
 			System.out.println(json);
 		} catch (StackOverflowError e) {

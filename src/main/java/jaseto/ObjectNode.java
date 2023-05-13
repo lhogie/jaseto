@@ -2,16 +2,16 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-public abstract class ObjectNode extends Node implements NotLeaf {
-	private final Map<String, Node> name_child = new TreeMap<>();
+public abstract class ObjectNode extends NodeContainer  {
+	private final Map<String, Node> name_child = new LinkedHashMap<>();
 
-	public ObjectNode(Object o, String name, Jaseto serializer) {
-		super(o, name, serializer);
+	public ObjectNode(Object o, Jaseto serializer) {
+		super(o, serializer);
 		serializer.registry.add(o, this);
-		setProperty("#class", new ClassNode(o.getClass(), "#class", serializer));
+		setProperty("#class", new ClassNode(o.getClass(), serializer));
 	}
 
 	@Override
@@ -19,9 +19,22 @@ public abstract class ObjectNode extends Node implements NotLeaf {
 		for (var e : name_child.entrySet()) {
 			if (e.getValue() == a) {
 				e.setValue(b);
-				return;
 			}
 		}
+	}
+
+	public String childName(Node node) {
+		for (var e : name_child.entrySet()) {
+			if (e.getValue() == node) {
+				return e.getKey();
+			}
+		}
+
+		return null;
+	}
+
+	public Node get(String key) {
+		return name_child.get(key);
 	}
 
 	public static String className(Object o) {
@@ -36,7 +49,6 @@ public abstract class ObjectNode extends Node implements NotLeaf {
 		name_child.put(name, childNode);
 		childNode.parent = this;
 	}
-
 
 	public void renameKey(String oldName, String newName) {
 		name_child.put(newName, removeKey(oldName));

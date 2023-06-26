@@ -3,9 +3,9 @@ package jaseto;
 import toools.reflect.Introspector;
 import toools.reflect.Introspector.AField;
 
-public class IntrospectingMapNode extends ObjectNode {
+public class IntrospectingObjectNode extends ObjectNode {
 
-	public IntrospectingMapNode(Object o, Jaseto j) {
+	public IntrospectingObjectNode(Object o, Jaseto j) {
 		super(o, j);
 
 		var allFields = Introspector.getIntrospector(o.getClass(), w -> System.err.println(w.getMessage())).getFields();

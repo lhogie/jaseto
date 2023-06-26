@@ -5,13 +5,13 @@ import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public abstract class ObjectNode extends NodeContainer  {
+public class ObjectNode extends NodeContainer {
 	private final Map<String, Node> name_child = new LinkedHashMap<>();
 
 	public ObjectNode(Object o, Jaseto serializer) {
 		super(o, serializer);
 		serializer.registry.add(o, this);
-		setProperty("#class", new ClassNode(o.getClass(), serializer));
+		setProperty("#class", serializer.toNode(o.getClass()));
 	}
 
 	@Override

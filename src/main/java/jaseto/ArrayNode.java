@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArrayNode extends NodeContainer  {
+public class ArrayNode extends NodeContainer {
 	private Class componentType;
-	public List<Node> children = new ArrayList<>();
-	boolean stringed;
+	private List<Node> children = new ArrayList<>();
 
 	public ArrayNode(Object o, Jaseto sc) {
 		super(o, sc);
@@ -19,40 +18,70 @@ public class ArrayNode extends NodeContainer  {
 		this.componentType = o.getClass().getComponentType();
 
 		for (int i = 0; i < len; ++i) {
-			var value = Array.get(o, i);
-			var node = sc.toNode(value);
-			children.add(node);
-			node.parent = this;
+			addChild(sc.toNode(Array.get(o, i)));
 		}
+	}
+
+	public void addChild(Node node) {
+		children.add(node);
+		node.parent = this;
 	}
 
 	@Override
 	public void toJSON(PrintWriter w) throws IOException {
-		w.println('[');
+		w.print('[');
+
+		
+		boolean oneLine = oneline();
+
 
 		int len = children.size();
 
 		if (len == 0) {
 			w.print(']');
 		} else {
-			for (int i = 0; i < len; ++i) {
-				tab(w);
-				w.print('\t');
-				children.get(i).toJSON(w);
+			if (oneLine) {
+				for (int i = 0; i < len; ++i) {
+					children.get(i).toJSON(w);
 
-				if (i < len - 1) {
-					w.print(',');
-					w.print('\n');
+					if (i < len - 1) {
+						w.print(", ");
+					}
 				}
-			}
+			}else {
+				w.println();
+				
+				for (int i = 0; i < len; ++i) {
+					tab(w);
+					w.print('\t');
+					children.get(i).toJSON(w);
 
-			if (!stringed) {
+					if (i < len - 1) {
+						w.print(',');
+						w.print('\n');
+					}
+				}
+
 				w.print('\n');
 				tab(w);
 			}
+			
 
 			w.print(']');
 		}
+	}
+
+	private boolean oneline() {
+		int len = 0;
+		
+		for (var c : children) {
+			if (!(c instanceof Litteral)) {
+				return false;
+			}
+			
+			len += ((Litteral) c).value.length();
+		}
+		return depth() * 4 + len < 80;
 	}
 
 	@Override

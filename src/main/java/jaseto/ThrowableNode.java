@@ -1,27 +1,20 @@
 package jaseto;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ThrowableNode extends ObjectNode {
 
-	public static class Entry {
-		String classname;
-		int lineNumber;
-	}
-	
+	public static final String STACK_TRACE = "stack_trace";
+
 	public ThrowableNode(Object o, Jaseto sc) {
 		super(o, sc);
 		var err = (Throwable) o;
-		setProperty("message", new Litteral(err.getMessage(), "message", sc));
-		var st = new ArrayList<Entry>();
 
-		for (var el : err.getStackTrace()) {
-			var e = new Entry();
-			e.classname =el.getClassName();
-			e.lineNumber = el.getLineNumber();
-			st.add(e);
+		if (err.getMessage() != null) {
+			setProperty("message", sc.toNode(err.getMessage()));
 		}
 
-		setProperty("stack_trace", sc.toNode(st));
+		setProperty(STACK_TRACE, sc.toNode(
+				Arrays.stream(err.getStackTrace()).map(e -> e.getClassName() + ":" + e.getLineNumber()).toArray()));
 	}
 }

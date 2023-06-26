@@ -1,8 +1,8 @@
 package jaseto;
 
-import java.beans.Customizer;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import jaseto.JasetoJSONParser.JSONException;
+import toools.reflect.Clazz;
 import toools.reflect.Introspector.AField;
 import toools.text.TextUtilities;
 import toools.text.json.JSONUtils;
@@ -19,8 +20,6 @@ import toools.text.json.JSONUtils;
 public class Jaseto {
 	private final Map<Class<?>, Class<? extends Node>> classDrivers = new HashMap<>();
 	public Registry registry = new Registry();
-
-
 
 	protected boolean enableLinksTo(Node n) {
 		return n.value.getClass() != String.class;
@@ -57,13 +56,15 @@ public class Jaseto {
 	}
 
 	public final Node toNode(Object o) {
+		if (o != null && o.getClass().getEnclosingClass() != null && !Clazz.isStatic(o.getClass()))
+			throw new IllegalArgumentException("I won't try to serialize an instance of a non-static inner/anonymous class: " + o.getClass().getName());
+
 		var alreadyInNode = registry.getNode(o);
 
 		if (alreadyInNode != null && enableLinksTo(alreadyInNode)) {
 			return new LinkNode(alreadyInNode, this);
 		} else {
-			Node n = createNode(o);
-			return n;
+			return createNode(o);
 		}
 	}
 
@@ -77,13 +78,13 @@ public class Jaseto {
 		} else if (o instanceof Throwable) {
 			return new ThrowableNode(o, this);
 		} else if (o instanceof Map) {
-			return new String2ObjectMapNode(o, this);
+			return new MapNode(o, this);
 		} else if (o.getClass().isArray()) {
 			return new ArrayNode(o, this);
 		} else if (o instanceof Collection) {
 			return new CollectionNode(o, this);
 		} else {
-			return new IntrospectingMapNode(o, this);
+			return new IntrospectingObjectNode(o, this);
 		}
 	}
 

@@ -14,10 +14,6 @@ public abstract class Node<E> {
 
 	public abstract void toJSON(PrintWriter w) throws IOException;
 
-	@Override
-	public String toString() {
-		return toJSON();
-	}
 
 	public String toJSON() {
 		var sw = new StringWriter();
@@ -32,6 +28,12 @@ public abstract class Node<E> {
 		return sw.toString();
 	}
 
+	@Override
+	public String toString() {
+		return toJSON();
+	}
+
+	
 	public int depth() {
 		return parent == null ? 0 : parent.depth() + 1;
 	}
@@ -42,7 +44,7 @@ public abstract class Node<E> {
 		}
 	}
 
-	protected String path() {
+	public String path() {
 		if (parent == null) {
 			return ".";
 		} else {

@@ -2,7 +2,6 @@ package jaseto;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import jaseto.JasetoJSONParser.JSONException;
-import toools.io.Cout;
 import toools.reflect.Clazz;
 import toools.reflect.Introspector.AField;
 import toools.text.TextUtilities;
@@ -58,7 +56,9 @@ public class Jaseto {
 
 	public final Node toNode(Object o) {
 		if (o != null && o.getClass().getEnclosingClass() != null && !Clazz.isStatic(o.getClass()))
-			throw new IllegalArgumentException("I won't try to serialize an instance of a non-static inner/anonymous class: " + o.getClass().getName());
+			throw new IllegalArgumentException(
+					"I won't try to serialize an instance of a non-static inner/anonymous class: "
+							+ o.getClass().getName());
 
 		var alreadyInNode = registry.getNode(o);
 
@@ -74,6 +74,8 @@ public class Jaseto {
 			return new NullNode(this);
 		} else if (Litteral.toStringable.contains(o.getClass())) {
 			return new Litteral(o, this);
+		} else if (o instanceof byte[]) {
+			return new Litteral(TextUtilities.base64((byte[]) o), this);
 		} else if (o instanceof Class) {
 			return new ClassNode(o, this);
 		} else if (o instanceof Throwable) {

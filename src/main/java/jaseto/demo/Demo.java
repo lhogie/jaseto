@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+import javax.swing.JLabel;
+
 import jaseto.Jaseto;
-import jaseto.Litteral;
 import jaseto.Node;
 
 public class Demo {
@@ -46,7 +49,7 @@ public class Demo {
 				}
 			};
 
-			var json = jaseto.toNode(new DemoType()).toJSON();
+			var json = jaseto.toNode(new JButton()).toJSON();
 			Jaseto.gson_parse(json);
 			System.out.println(json);
 		} catch (StackOverflowError e) {
